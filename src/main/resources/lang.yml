@@ -1,0 +1,42 @@
+###################################################
+##                                               ##
+##             WildInspect Messages              ##
+##              Developed by Ome_R               ##
+##                                               ##
+###################################################
+
+# Called when fails to follow a command's format usage
+COMMAND_USAGE: |-
+  &cToo few arguments. &eUse like this:
+  &b/{0} &3{1}
+
+# Called when toggling on/off the inspector mode
+INSPECTOR_ON: '&3WildInspect &f- Inspector now enabled.'
+INSPECTOR_OFF: '&3WildInspect &f- Inspector now disabled.'
+
+# Called when inspecting data on a block
+INSPECT_DATA_HEADER: '&f----- &3WildInspect &f----- &7(x{0}/y{1}/z{2})'
+INSPECT_DATA_ROW: '&7{0} &f- &3{1} &f{2} &3{3}&f.'
+INSPECT_DATA_FOOTER: |-
+  &f-----
+  &fPage {0}/{1}. View older data by typing "&3/f inspect <page>&f".
+
+# Called when trying to inspect a block not inside a claim.
+NOT_INSIDE_CLAIM: '&3WildInspect &f- Must be inside your claims to see block''s data.'
+
+# Called when couldn't find block data
+NO_BLOCK_DATA: '&3WildInspect &f- No block data found for {0}.'
+NO_BLOCK_INTERACTIONS: '&3WildInspect &f- No block interactions found for {0}.'
+NO_CONTAINER_TRANSACTIONS: '&3WildInspect &f- No container transactions found for {0}.'
+
+# Called when player tried to inspect block's page without selecting one
+NO_BLOCK_SELECTED: '&3WildInspect &f- Select a block using "{0}" first.'
+
+# Called when a player successfully reloaded all configuration files.
+RELOAD_SUCCESS: '&eSuccessfully reloaded configuration files.'
+
+# Called when a player doesn't have the required role
+REQUIRED_ROLE: '&cYou must be a {0} to enable faction inspect mode.'
+
+# Called when a player doesn't specify a page
+SPECIFY_PAGE: '&3WildInspect &f- Please specify a page.'

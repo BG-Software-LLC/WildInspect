@@ -1,0 +1,17 @@
+###################################################
+##                                               ##
+##           WildInspect Configuration           ##
+##              Developed by Ome_R               ##
+##                                               ##
+###################################################
+
+#What is the command of the plugin?
+commands:
+- 'f inspect'
+- 'faction inspect'
+
+factions:
+  #The required role to use the command.
+  #For FactionsUUID: RECRUIT, NORMAL, MODERATOR, ADMIN
+  #For MCore's MassiveFactions: RECRUIT, MEMBER, OFFICER, LEADER
+  required-role: MODERATOR

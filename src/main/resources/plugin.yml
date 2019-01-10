@@ -1,0 +1,12 @@
+name: WildInspect
+version: 2.0.0
+main: xyz.wildseries.wildinspect.WildInspectPlugin
+description: Inspect block changes, chest transactions and more!
+website: http://wildseries.xyz/
+authors: [Ome_R, WildSeries]
+depend: [CoreProtect]
+softdepend: [Factions, ASkyBlock, GriefPrevention, Towny, AcidIsland]
+commands:
+  wildinspect:
+    description: Reload configuration files
+    aliases: [wi]
