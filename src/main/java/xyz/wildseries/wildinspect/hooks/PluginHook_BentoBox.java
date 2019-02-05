@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public final class PluginHook_BentoBox implements PluginHook {
 
-    private BentoBox plugin = BentoBox.getInstance();
-
     @Override
     public boolean hasRole(Player pl, String role) {
         return true;
@@ -18,7 +16,7 @@ public final class PluginHook_BentoBox implements PluginHook {
 
     @Override
     public boolean hasRegionAccess(Player pl, Location loc) {
-        Optional<Island> island = plugin.getIslands().getIslandAt(loc);
+        Optional<Island> island = BentoBox.getInstance().getIslands().getIslandAt(loc);
         return island.isPresent() && island.get().getMembers().containsKey(pl.getUniqueId());
     }
 }
