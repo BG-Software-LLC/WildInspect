@@ -12,6 +12,7 @@ import xyz.wildseries.wildinspect.hooks.ClaimsProvider_BentoBox;
 import xyz.wildseries.wildinspect.hooks.ClaimsProvider_FactionsUUID;
 import xyz.wildseries.wildinspect.hooks.ClaimsProvider_GriefPrevention;
 import xyz.wildseries.wildinspect.hooks.ClaimsProvider_MassiveFactions;
+import xyz.wildseries.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
 import xyz.wildseries.wildinspect.hooks.ClaimsProvider_Towny;
 import xyz.wildseries.wildinspect.hooks.ClaimsProvider_Villages;
 
@@ -74,6 +75,11 @@ public final class HooksHandler {
         if(Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")){
             claimsProviders.add(new ClaimsProvider_GriefPrevention());
             WildInspectPlugin.log(" - Using GriefPrevention as ClaimsProvider.");
+        }
+        //Checks if SuperiorSkyblock is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("SuperiorSkyblock2")){
+            claimsProviders.add(new ClaimsProvider_SuperiorSkyblock());
+            WildInspectPlugin.log(" - Using SuperiorSkyblock as ClaimsProvider.");
         }
         //Checks if Towny is installed
         if(Bukkit.getPluginManager().isPluginEnabled("Towny")){
