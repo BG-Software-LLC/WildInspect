@@ -8,6 +8,7 @@ import xyz.wildseries.wildinspect.WildInspectPlugin;
 import xyz.wildseries.wildinspect.hooks.PluginHook;
 import xyz.wildseries.wildinspect.hooks.PluginHook_ASkyBlock;
 import xyz.wildseries.wildinspect.hooks.PluginHook_AcidIsland;
+import xyz.wildseries.wildinspect.hooks.PluginHook_BentoBox;
 import xyz.wildseries.wildinspect.hooks.PluginHook_FactionsUUID;
 import xyz.wildseries.wildinspect.hooks.PluginHook_GriefPrevention;
 import xyz.wildseries.wildinspect.hooks.PluginHook_MassiveFactions;
@@ -60,6 +61,11 @@ public final class HooksHandler implements PluginHook {
             Hookup.AcidIsland.setEnabled(true);
             WildInspectPlugin.log(" - Using AcidIsland as ClaimsProvider.");
         }
+        //Checks if BentoBox is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("BentoBox")){
+            Hookup.BentoBox.setEnabled(true);
+            WildInspectPlugin.log(" - Using BentoBox as ClaimsProvider.");
+        }
         //Checks if GriefPrevention is installed
         if(Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")){
             Hookup.GriefPrevention.setEnabled(true);
@@ -79,7 +85,8 @@ public final class HooksHandler implements PluginHook {
         ASkyBlock(new PluginHook_ASkyBlock()),
         GriefPrevention(new PluginHook_GriefPrevention()),
         Towny(new PluginHook_Towny()),
-        AcidIsland(new PluginHook_AcidIsland());
+        AcidIsland(new PluginHook_AcidIsland()),
+        BentoBox(new PluginHook_BentoBox());
 
         public PluginHook hook;
         private boolean enabled;
