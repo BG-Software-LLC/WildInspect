@@ -19,7 +19,7 @@ public final class PluginHook_MassiveFactions implements PluginHook {
         boolean overriding = false;
         try {
             overriding = mPlayer.isOverriding();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             try {
                 overriding = (boolean) mPlayer.getClass().getMethod("isUsingAdminMode").invoke(mPlayer);
             } catch (Exception ignored) { }
