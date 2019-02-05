@@ -13,6 +13,7 @@ import xyz.wildseries.wildinspect.hooks.PluginHook_FactionsUUID;
 import xyz.wildseries.wildinspect.hooks.PluginHook_GriefPrevention;
 import xyz.wildseries.wildinspect.hooks.PluginHook_MassiveFactions;
 import xyz.wildseries.wildinspect.hooks.PluginHook_Towny;
+import xyz.wildseries.wildinspect.hooks.PluginHook_Villages;
 
 public final class HooksHandler implements PluginHook {
 
@@ -76,6 +77,11 @@ public final class HooksHandler implements PluginHook {
             Hookup.Towny.setEnabled(true);
             WildInspectPlugin.log(" - Using Towny as ClaimsProvider.");
         }
+        //Checks if Villages is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("Villages")){
+            Hookup.Villages.setEnabled(true);
+            WildInspectPlugin.log(" - Using Villages as ClaimsProvider.");
+        }
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }
 
@@ -86,7 +92,8 @@ public final class HooksHandler implements PluginHook {
         GriefPrevention(new PluginHook_GriefPrevention()),
         Towny(new PluginHook_Towny()),
         AcidIsland(new PluginHook_AcidIsland()),
-        BentoBox(new PluginHook_BentoBox());
+        BentoBox(new PluginHook_BentoBox()),
+        Villages(new PluginHook_Villages());
 
         public PluginHook hook;
         private boolean enabled;
