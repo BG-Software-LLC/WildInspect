@@ -5,7 +5,7 @@ description: Inspect block changes, chest transactions and more!
 website: http://wildseries.xyz/
 authors: [Ome_R, WildSeries]
 depend: [CoreProtect]
-softdepend: [Factions, ASkyBlock, GriefPrevention, Towny, AcidIsland, BentoBox, Villages]
+softdepend: [AcidIsland, ASkyBlock, BentoBox, Factions, GriefPrevention, Towny, Villages]
 commands:
   wildinspect:
     description: Reload configuration files

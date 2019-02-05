@@ -8,15 +8,18 @@ import com.massivecraft.massivecore.ps.PS;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public final class PluginHook_MassiveFactions implements PluginHook {
+public final class ClaimsProvider_MassiveFactions implements ClaimsProvider {
 
+    @Override
     public boolean hasRole(Player pl, String role){
         return MPlayer.get(pl).getRole().isAtLeast(Rel.valueOf(role));
     }
 
-    public boolean hasRegionAccess(Player pl, Location loc) {
-        MPlayer mPlayer = MPlayer.get(pl);
+    @Override
+    public boolean hasRegionAccess(Player player, Location location) {
+        MPlayer mPlayer = MPlayer.get(player);
         boolean overriding = false;
+
         try {
             overriding = mPlayer.isOverriding();
         } catch (Throwable ex) {
@@ -25,6 +28,6 @@ public final class PluginHook_MassiveFactions implements PluginHook {
             } catch (Exception ignored) { }
         }
 
-        return overriding || (mPlayer.hasFaction() && mPlayer.getFaction().equals(BoardColl.get().getFactionAt(PS.valueOf(loc))));
+        return overriding || (mPlayer.hasFaction() && mPlayer.getFaction().equals(BoardColl.get().getFactionAt(PS.valueOf(location))));
     }
 }

@@ -7,18 +7,18 @@ import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public final class PluginHook_GriefPrevention implements PluginHook {
+public final class ClaimsProvider_GriefPrevention implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player pl, String role) {
+    public boolean hasRole(Player player, String role) {
         return true;
     }
 
     @Override
-    public boolean hasRegionAccess(Player pl, Location loc) {
+    public boolean hasRegionAccess(Player player, Location location) {
         DataStore dataStore = me.ryanhamshire.GriefPrevention.GriefPrevention.instance.dataStore;
-        PlayerData playerData = dataStore.getPlayerData(pl.getUniqueId());
-        Claim claim = dataStore.getClaimAt(loc, false, playerData.lastClaim);
+        PlayerData playerData = dataStore.getPlayerData(player.getUniqueId());
+        Claim claim = dataStore.getClaimAt(location, false, playerData.lastClaim);
         return claim != null && (playerData.ignoreClaims || playerData.getClaims().contains(claim));
     }
 }

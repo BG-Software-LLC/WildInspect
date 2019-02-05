@@ -42,8 +42,9 @@ public final class WildInspectPlugin extends JavaPlugin {
         getCommand("wildinspect").setTabCompleter(new ReloadCommand());
 
         settingsHandler = new SettingsHandler(this);
+        hooksHandler = new HooksHandler(this);
+
         Locale.reload();
-        hooksHandler = new HooksHandler();
         loadCoreProtect();
 
         if(Updater.isOutdated()) {

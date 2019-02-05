@@ -8,18 +8,18 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public final class PluginHook_Towny implements PluginHook{
+public final class ClaimsProvider_Towny implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player pl, String role) {
+    public boolean hasRole(Player player, String role) {
         return true;
     }
 
     @Override
-    public boolean hasRegionAccess(Player pl, Location loc) {
+    public boolean hasRegionAccess(Player player, Location location) {
         try {
-            TownBlock block = WorldCoord.parseWorldCoord(loc).getTownBlock();
-            Resident resident = TownyUniverse.getDataSource().getResident(pl.getName());
+            TownBlock block = WorldCoord.parseWorldCoord(location).getTownBlock();
+            Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
 
             return resident.hasTown() && resident.getTown().hasTownBlock(block);
         } catch (Exception ignored) {}
