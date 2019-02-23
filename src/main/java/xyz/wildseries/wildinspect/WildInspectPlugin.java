@@ -12,6 +12,7 @@ import xyz.wildseries.wildinspect.listeners.BlockListener;
 import xyz.wildseries.wildinspect.listeners.PlayerListener;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.wildseries.wildinspect.metrics.Metrics;
 
 public final class WildInspectPlugin extends JavaPlugin {
 
@@ -25,6 +26,7 @@ public final class WildInspectPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        new Metrics(this);
 
         log("******** ENABLE START ********");
 
