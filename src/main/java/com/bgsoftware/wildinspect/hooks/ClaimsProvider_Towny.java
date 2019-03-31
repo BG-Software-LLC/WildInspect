@@ -12,7 +12,12 @@ public final class ClaimsProvider_Towny implements ClaimsProvider {
 
     @Override
     public boolean hasRole(Player player, String role) {
-        return true;
+        try{
+            Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
+            return resident.hasTownRank(role);
+        }catch(Exception ignored){}
+
+        return false;
     }
 
     @Override
