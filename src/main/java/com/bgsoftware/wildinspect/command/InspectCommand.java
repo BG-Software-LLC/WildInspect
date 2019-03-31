@@ -44,8 +44,8 @@ public final class InspectCommand implements Listener {
         String[] args = e.getMessage().replace(label + " ", "").split(" ");
         Player pl = e.getPlayer();
 
-        if(!plugin.getHooksHandler().hasRole(pl, plugin.getSettings().requiredRole)){
-            Locale.REQUIRED_ROLE.send(pl, plugin.getSettings().requiredRole.toLowerCase());
+        if(!plugin.getHooksHandler().hasRole(pl, plugin.getSettings().requiredRoles)){
+            Locale.REQUIRED_ROLE.send(pl, format(plugin.getSettings().requiredRoles));
             return;
         }
 
@@ -94,6 +94,15 @@ public final class InspectCommand implements Listener {
         }
 
 
+    }
+
+    private String format(String[] strings){
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(String str : strings)
+            stringBuilder.append(", ").append(str);
+
+        return stringBuilder.substring(2);
     }
 
 }

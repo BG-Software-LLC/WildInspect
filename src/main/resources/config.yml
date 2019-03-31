@@ -5,13 +5,15 @@
 ##                                               ##
 ###################################################
 
-#What is the command of the plugin?
+# What is the command of the plugin?
 commands:
 - 'f inspect'
 - 'faction inspect'
 
-factions:
-  #The required role to use the command.
-  #For FactionsUUID: RECRUIT, NORMAL, MODERATOR, ADMIN
-  #For MCore's MassiveFactions: RECRUIT, MEMBER, OFFICER, LEADER
-  required-role: MODERATOR
+# A list of roles that can use the command.
+# FactionsUUID: RECRUIT, NORMAL, MODERATOR, ADMIN
+# MassiveFactions: RECRUIT, MEMBER, OFFICER, LEADER
+# Towny: configured.
+required-roles:
+- MODERATOR
+- ADMIN

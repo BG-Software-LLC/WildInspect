@@ -10,7 +10,7 @@ import java.util.Set;
 
 public final class SettingsHandler {
 
-    public final String requiredRole;
+    public final String[] requiredRoles;
     public final Set<String> commands;
 
     public SettingsHandler(WildInspectPlugin plugin){
@@ -23,7 +23,13 @@ public final class SettingsHandler {
 
         YamlConfiguration cfg = YamlConfiguration.loadConfiguration(file);
 
-        requiredRole = cfg.getString("factions.required-role");
+        if(cfg.contains("factions.required-role"))
+            requiredRoles = new String[] { cfg.getString("factions.required-role") };
+        else if(cfg.contains("required-roles"))
+            requiredRoles = cfg.getStringList("required-roles").toArray(new String[]{});
+        else
+            requiredRoles = new String[] {};
+
         commands = new HashSet<>();
         if(cfg.contains("command"))
             commands.add(cfg.getString("command"));

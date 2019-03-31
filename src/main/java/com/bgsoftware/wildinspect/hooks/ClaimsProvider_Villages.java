@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public final class ClaimsProvider_Villages implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player player, String role) {
+    public boolean hasRole(Player player, String... role) {
         return true;
     }
 
