@@ -16,7 +16,7 @@ public final class ClaimsProvider_Towny implements ClaimsProvider {
     public boolean hasRole(Player player, String... roles) {
         try{
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
-            return Arrays.stream(roles).anyMatch(resident::hasTownRank);
+            return Arrays.stream(roles).anyMatch(resident::hasTownRank) || (Arrays.asList(roles).contains("MAYOR") && resident.isMayor());
         }catch(Exception ignored){}
 
         return false;
@@ -32,4 +32,5 @@ public final class ClaimsProvider_Towny implements ClaimsProvider {
         } catch (Exception ignored) {}
         return false;
     }
+
 }
