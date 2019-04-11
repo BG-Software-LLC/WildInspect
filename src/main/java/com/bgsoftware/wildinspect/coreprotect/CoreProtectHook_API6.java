@@ -32,6 +32,11 @@ public final class CoreProtectHook_API6 implements CoreProtectHook {
 
         InspectPlayers.setBlock(pl, bl);
 
+        if(plugin.getSettings().historyLimitPage < page){
+            Locale.PAGE_LIMIT_REACH.send(pl);
+            return;
+        }
+
         new Thread(() -> {
             try{
                 Connection connection = Database.getConnection(false);

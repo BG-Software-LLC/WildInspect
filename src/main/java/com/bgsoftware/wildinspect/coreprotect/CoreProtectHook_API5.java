@@ -29,6 +29,11 @@ public final class CoreProtectHook_API5 implements CoreProtectHook {
 
         InspectPlayers.setBlock(pl, bl);
 
+        if(plugin.getSettings().historyLimitPage < page){
+            Locale.PAGE_LIMIT_REACH.send(pl);
+            return;
+        }
+
         new Thread(() -> {
             try{
                 Connection connection = Database.getConnection(false);
@@ -77,7 +82,7 @@ public final class CoreProtectHook_API5 implements CoreProtectHook {
                         Locale.INSPECT_DATA_ROW.send(pl, matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4));
                     }
                     else if((matcher = Pattern.compile("§fPage (.*)/(.*). View older data by typing \"§3/co l <page>§f\".").matcher(line)).matches()){
-                        Locale.INSPECT_DATA_FOOTER.send(pl, matcher.group(1), matcher.group(2));
+                        Locale.INSPECT_DATA_FOOTER.send(pl, matcher.group(1), Math.min(Integer.valueOf(matcher.group(2)), plugin.getSettings().historyLimitPage));
                     }
                 }
                 statement.close();
