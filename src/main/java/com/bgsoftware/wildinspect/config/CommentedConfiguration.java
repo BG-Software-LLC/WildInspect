@@ -36,7 +36,7 @@ public final class CommentedConfiguration extends YamlConfiguration{
 
     public void resetYamlFile(Plugin plugin, String resourceName){
         File configFile = new File(plugin.getDataFolder(), resourceName);
-        plugin.saveResource(resourceName, false);
+        plugin.saveResource(resourceName, true);
 
         CommentedConfiguration tempConfig = new CommentedConfiguration(commentsClass);
         tempConfig.load(configFile);
