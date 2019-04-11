@@ -5,7 +5,7 @@
 ##                                               ##
 ###################################################
 
-# What is the command of the plugin?
+# What commands should be used as inspect toggle command?
 commands:
 - 'f inspect'
 - 'faction inspect'
