@@ -26,6 +26,9 @@ public final class BlockListener implements Listener {
         if(!InspectPlayers.isInspectEnabled(e.getPlayer()))
             return;
 
+        if(isOffhand(e))
+            return;
+
         e.setCancelled(true);
 
         if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -47,6 +50,13 @@ public final class BlockListener implements Listener {
                 InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
             }
         }
+    }
+
+    private boolean isOffhand(PlayerInteractEvent event){
+        try{
+            return event.getClass().getMethod("getHand").invoke(event).toString().equals("OFF_HAND");
+        }catch(Throwable ignored){}
+        return false;
     }
 
 }
