@@ -37,10 +37,10 @@ public final class HooksHandler {
 
     public boolean hasRegionAccess(Player player, Location location) {
         for(ClaimsProvider provider : claimsProviders){
-            if(!provider.hasRegionAccess(player, location))
-                return false;
+            if(provider.hasRegionAccess(player, location))
+                return true;
         }
-        return true;
+        return false;
     }
 
     private void loadHookups(){
