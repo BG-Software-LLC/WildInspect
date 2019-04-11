@@ -8,7 +8,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("WeakerAccess")
 public final class Locale {
 
     private static Map<String, Locale> localeMap = new HashMap<>();
@@ -23,7 +22,7 @@ public final class Locale {
     public static Locale NO_BLOCK_DATA = new Locale("NO_BLOCK_DATA");
     public static Locale NO_BLOCK_INTERACTIONS = new Locale("NO_BLOCK_INTERACTIONS");
     public static Locale NO_CONTAINER_TRANSACTIONS = new Locale("NO_CONTAINER_TRANSACTIONS");
-    public static Locale PAGE_LIMIT_REACH = new Locale("PAGE_LIMIT_REACH");
+    public static Locale LIMIT_REACH = new Locale("LIMIT_REACH");
     public static Locale NO_BLOCK_SELECTED = new Locale("NO_BLOCK_SELECTED");
     public static Locale RELOAD_SUCCESS = new Locale("RELOAD_SUCCESS");
     public static Locale REQUIRED_ROLE = new Locale("REQUIRED_ROLE");

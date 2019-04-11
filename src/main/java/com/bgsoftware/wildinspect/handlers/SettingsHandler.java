@@ -14,7 +14,7 @@ public final class SettingsHandler {
 
     public final String[] requiredRoles;
     public final Set<String> commands;
-    public final long historyLimitDate;
+    public final int historyLimitDate;
     public final int historyLimitPage;
 
     public SettingsHandler(WildInspectPlugin plugin){
@@ -45,7 +45,7 @@ public final class SettingsHandler {
 
         requiredRoles = cfg.getStringList("required-roles").toArray(new String[]{});
         commands = new HashSet<>(cfg.getStringList("commands"));
-        historyLimitDate = cfg.getInt("history-limit.date", -1) == -1 ? Long.MAX_VALUE : cfg.getInt("history-limit.date", -1);
+        historyLimitDate = cfg.getInt("history-limit.date", -1) == -1 ? Integer.MAX_VALUE : cfg.getInt("history-limit.date", -1);
         historyLimitPage = cfg.getInt("history-limit.page", -1) == -1 ? Integer.MAX_VALUE : cfg.getInt("history-limit.page", -1);
 
         WildInspectPlugin.log(" - Found " + commands.size() + " commands in config.yml.");

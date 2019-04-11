@@ -2,12 +2,9 @@ package com.bgsoftware.wildinspect;
 
 import com.bgsoftware.wildinspect.command.InspectCommand;
 import com.bgsoftware.wildinspect.command.ReloadCommand;
+import com.bgsoftware.wildinspect.coreprotect.CoreProtect;
 import com.bgsoftware.wildinspect.listeners.PlayerListener;
 import com.bgsoftware.wildinspect.metrics.Metrics;
-import net.coreprotect.CoreProtect;
-import com.bgsoftware.wildinspect.coreprotect.CoreProtectHook;
-import com.bgsoftware.wildinspect.coreprotect.CoreProtectHook_API5;
-import com.bgsoftware.wildinspect.coreprotect.CoreProtectHook_API6;
 import com.bgsoftware.wildinspect.handlers.SettingsHandler;
 import com.bgsoftware.wildinspect.handlers.HooksHandler;
 import com.bgsoftware.wildinspect.listeners.BlockListener;
@@ -21,7 +18,7 @@ public final class WildInspectPlugin extends JavaPlugin {
     private SettingsHandler settingsHandler;
     private HooksHandler hooksHandler;
 
-    private CoreProtectHook coreProtectHook;
+    private CoreProtect coreProtect;
 
     @Override
     public void onEnable() {
@@ -45,9 +42,9 @@ public final class WildInspectPlugin extends JavaPlugin {
 
         settingsHandler = new SettingsHandler(this);
         hooksHandler = new HooksHandler(this);
+        coreProtect = new CoreProtect(this);
 
         Locale.reload();
-        loadCoreProtect();
 
         if(Updater.isOutdated()) {
             log("");
@@ -59,11 +56,6 @@ public final class WildInspectPlugin extends JavaPlugin {
         log("******** ENABLE DONE ********");
     }
 
-    private void loadCoreProtect(){
-        int apiVersion = getPlugin(CoreProtect.class).getAPI().APIVersion();
-        coreProtectHook = apiVersion == 5 ? new CoreProtectHook_API5() : new CoreProtectHook_API6();
-    }
-
     public SettingsHandler getSettings() {
         return settingsHandler;
     }
@@ -72,8 +64,8 @@ public final class WildInspectPlugin extends JavaPlugin {
         return hooksHandler;
     }
 
-    public CoreProtectHook getCoreProtect() {
-        return coreProtectHook;
+    public CoreProtect getCoreProtect() {
+        return coreProtect;
     }
 
     public static void log(String message){
