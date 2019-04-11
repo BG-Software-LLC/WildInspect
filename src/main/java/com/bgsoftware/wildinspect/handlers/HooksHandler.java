@@ -7,6 +7,7 @@ import com.bgsoftware.wildinspect.hooks.ClaimsProvider_AcidIsland;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_BentoBox;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsUUID;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Towny;
@@ -89,6 +90,11 @@ public final class HooksHandler {
         if(Bukkit.getPluginManager().isPluginEnabled("Villages")){
             claimsProviders.add(new ClaimsProvider_Villages());
             WildInspectPlugin.log(" - Using Villages as ClaimsProvider.");
+        }
+        //Checks if Lands is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("Lands")){
+            claimsProviders.add(new ClaimsProvider_Lands());
+            WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
         }
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }
