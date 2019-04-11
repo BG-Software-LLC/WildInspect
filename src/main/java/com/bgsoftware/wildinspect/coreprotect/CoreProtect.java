@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,16 @@ public final class CoreProtect {
             Locale.NOT_INSIDE_CLAIM.send(pl);
             return;
         }
+
+        if(InspectPlayers.isCooldown(pl)){
+            DecimalFormat df = new DecimalFormat();
+            df.setMaximumFractionDigits(2);
+            Locale.COOLDOWN.send(pl, df.format(InspectPlayers.getTimeLeft(pl) / 1000));
+            return;
+        }
+
+        if(plugin.getSettings().cooldown != -1)
+            InspectPlayers.setCooldown(pl);
 
         InspectPlayers.setBlock(pl, bl);
 

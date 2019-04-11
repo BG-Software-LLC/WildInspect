@@ -33,4 +33,8 @@ public final class ConfigComments {
     @Comment("Page limit. Limit the maximum amount of pages that can be viewed.")
     public static String HISTORY_LIMIT_PAGE = "history-limit.page";
 
+    @Comment("")
+    @Comment("Cooldown interval between checks.")
+    public static String COOLDOWN = "cooldown";
+
 }

@@ -16,6 +16,7 @@ public final class SettingsHandler {
     public final Set<String> commands;
     public final int historyLimitDate;
     public final int historyLimitPage;
+    public final long cooldown;
 
     public SettingsHandler(WildInspectPlugin plugin){
         WildInspectPlugin.log("Loading configuration started...");
@@ -47,6 +48,7 @@ public final class SettingsHandler {
         commands = new HashSet<>(cfg.getStringList("commands"));
         historyLimitDate = cfg.getInt("history-limit.date", -1) == -1 ? Integer.MAX_VALUE : cfg.getInt("history-limit.date", -1);
         historyLimitPage = cfg.getInt("history-limit.page", -1) == -1 ? Integer.MAX_VALUE : cfg.getInt("history-limit.page", -1);
+        cooldown = cfg.getLong("cooldown", 5000);
 
         WildInspectPlugin.log(" - Found " + commands.size() + " commands in config.yml.");
         WildInspectPlugin.log("Loading configuration done (Took " + (System.currentTimeMillis() - startTime) + "ms)");

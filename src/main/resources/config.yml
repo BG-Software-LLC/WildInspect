@@ -25,3 +25,6 @@ history-limit:
   date: -1
   # Page limit. Limit the maximum amount of pages that can be viewed.
   page: -1
+
+# Cooldown interval between checks.
+cooldown: 5000

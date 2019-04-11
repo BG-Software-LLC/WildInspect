@@ -1,5 +1,6 @@
 package com.bgsoftware.wildinspect.utils;
 
+import com.bgsoftware.wildinspect.WildInspectPlugin;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
@@ -10,8 +11,11 @@ import java.util.UUID;
 
 public final class InspectPlayers {
 
+    private static final WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
+
     private static final Map<UUID, Block> inspectModePlayers = new HashMap<>();
     private static final Map<UUID, Action> inspectModeClickMode = new HashMap<>();
+    private static final Map<UUID, Long> cooldownPlayers = new HashMap<>();
 
     public static boolean isInspectEnabled(OfflinePlayer pl){
         return inspectModePlayers.containsKey(pl.getUniqueId());
@@ -58,4 +62,19 @@ public final class InspectPlayers {
         inspectModePlayers.remove(pl.getUniqueId());
         inspectModeClickMode.remove(pl.getUniqueId());
     }
+
+    public static boolean isCooldown(OfflinePlayer pl){
+        if(System.currentTimeMillis() > cooldownPlayers.getOrDefault(pl.getUniqueId(), System.currentTimeMillis()))
+            cooldownPlayers.remove(pl.getUniqueId());
+        return cooldownPlayers.containsKey(pl.getUniqueId());
+    }
+
+    public static long getTimeLeft(OfflinePlayer pl){
+        return isCooldown(pl) ? cooldownPlayers.get(pl.getUniqueId()) - System.currentTimeMillis() : 0;
+    }
+
+    public static void setCooldown(OfflinePlayer pl){
+        cooldownPlayers.put(pl.getUniqueId(), System.currentTimeMillis() + plugin.getSettings().cooldown);
+    }
+
 }
