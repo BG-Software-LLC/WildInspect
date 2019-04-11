@@ -1,5 +1,6 @@
 package com.bgsoftware.wildinspect.config;
 
+@SuppressWarnings("unused")
 public final class ConfigComments {
 
     @Comment("###################################################")
