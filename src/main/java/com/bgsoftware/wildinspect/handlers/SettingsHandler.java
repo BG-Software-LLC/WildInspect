@@ -1,10 +1,12 @@
 package com.bgsoftware.wildinspect.handlers;
 
 import com.bgsoftware.wildinspect.WildInspectPlugin;
-import org.bukkit.configuration.file.YamlConfiguration;
+import com.bgsoftware.wildinspect.config.CommentedConfiguration;
+import com.bgsoftware.wildinspect.config.ConfigComments;
 
-import java.io.*;
+import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,20 +23,26 @@ public final class SettingsHandler {
         if(!file.exists())
             plugin.saveResource("config.yml", false);
 
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+        CommentedConfiguration cfg = new CommentedConfiguration(ConfigComments.class);
+        cfg.load(file);
 
-        if(cfg.contains("factions.required-role"))
-            requiredRoles = new String[] { cfg.getString("factions.required-role") };
-        else if(cfg.contains("required-roles"))
-            requiredRoles = cfg.getStringList("required-roles").toArray(new String[]{});
-        else
-            requiredRoles = new String[] {};
+        if(cfg.contains("factions.required-role")) {
+            //noinspection all
+            cfg.set("required-roles", Arrays.asList(cfg.getString("factions.required-role")));
+            cfg.set("factions", null);
+            cfg.save(file);
+        }
+        if(cfg.contains("command")) {
+            //noinspection all
+            cfg.set("commands", Arrays.asList(cfg.getString("command")));
+            cfg.set("command", null);
+            cfg.save(file);
+        }
 
-        commands = new HashSet<>();
-        if(cfg.contains("command"))
-            commands.add(cfg.getString("command"));
-        if(cfg.contains("commands"))
-            commands.addAll(cfg.getStringList("commands"));
+        cfg.resetYamlFile(plugin, "config.yml");
+
+        requiredRoles = cfg.getStringList("required-roles").toArray(new String[]{});
+        commands = new HashSet<>(cfg.getStringList("commands"));
 
         WildInspectPlugin.log(" - Found " + commands.size() + " commands in config.yml.");
         WildInspectPlugin.log("Loading configuration done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
