@@ -28,3 +28,6 @@ history-limit:
 
 # Cooldown interval between checks.
 cooldown: 5000
+
+# Should ops be hidden in the inspect mode?
+hide-ops: true

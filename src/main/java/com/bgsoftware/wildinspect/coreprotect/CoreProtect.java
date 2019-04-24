@@ -5,6 +5,7 @@ import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -84,6 +85,7 @@ public final class CoreProtect {
                     Matcher matcher;
 
                     StringBuilder message = new StringBuilder();
+                    boolean empty = true;
 
                     for(String line : resultLines){
                         if((matcher = Pattern.compile("§3CoreProtect §f- §fNo (.*) found for (.*).").matcher(line)).matches()){
@@ -103,8 +105,15 @@ public final class CoreProtect {
                             message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
                         }
                         else if((matcher = Pattern.compile("§7(.*) §f- §3(.*) §f(.*) §3(.*)§f.").matcher(line)).matches()){
+                            if(plugin.getSettings().hideOps) {
+                                //noinspection deprecation
+                                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(matcher.group(2));
+                                if (offlinePlayer != null && offlinePlayer.isOp())
+                                    continue;
+                            }
                             double days = Double.valueOf(matcher.group(1).split("/")[0]) / 24;
                             if(plugin.getSettings().historyLimitDate >= days) {
+                                empty = false;
                                 message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4)));
                             }
                         }
@@ -114,7 +123,7 @@ public final class CoreProtect {
                         }
                     }
 
-                    pl.sendMessage(message.substring(1));
+                    pl.sendMessage(empty ? Locale.NO_BLOCK_DATA.getMessage("that page") : message.substring(1));
                 }
             } catch(SQLException ex){
                 ex.printStackTrace();

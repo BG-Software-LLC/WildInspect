@@ -37,4 +37,8 @@ public final class ConfigComments {
     @Comment("Cooldown interval between checks.")
     public static String COOLDOWN = "cooldown";
 
+    @Comment("")
+    @Comment("Should ops be hidden in the inspect mode?")
+    public static String HIDE_OPS = "hide-ops";
+
 }
