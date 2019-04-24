@@ -1,10 +1,10 @@
 name: WildInspect
-version: 2.1.1
+version: 2.2.0
 main: com.bgsoftware.wildinspect.WildInspectPlugin
 description: Inspect block changes, chest transactions and more!
 website: http://wildseries.xyz/
-authors: [Ome_R, WildSeries]
-depend: [CoreProtect]
+author: Ome_R
+depends: CoreProtect
 softdepend: [AcidIsland, ASkyBlock, BentoBox, Factions, GriefPrevention, SuperiorSkyblock, Towny, Villages]
 commands:
   wildinspect:
