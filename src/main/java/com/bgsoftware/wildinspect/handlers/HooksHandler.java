@@ -40,7 +40,7 @@ public final class HooksHandler {
             if(provider.hasRegionAccess(player, location))
                 return true;
         }
-        return false;
+        return claimsProviders.isEmpty();
     }
 
     private void loadHookups(){
