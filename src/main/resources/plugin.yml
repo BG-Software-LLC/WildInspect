@@ -1,5 +1,5 @@
 name: WildInspect
-version: 2.2.0
+version: 2.2.1
 main: com.bgsoftware.wildinspect.WildInspectPlugin
 description: Inspect block changes, chest transactions and more!
 website: http://wildseries.xyz/
