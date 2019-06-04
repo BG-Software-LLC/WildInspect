@@ -36,7 +36,7 @@ public final class InspectPlayers {
     public static Block getBlock(OfflinePlayer pl){
         if(inspectModePlayers.containsKey(pl.getUniqueId()))
             return inspectModePlayers.get(pl.getUniqueId());
-        return null;
+        throw new NullPointerException("Null block for " + pl.getName());
     }
 
     public static boolean hasBlock(OfflinePlayer pl){
