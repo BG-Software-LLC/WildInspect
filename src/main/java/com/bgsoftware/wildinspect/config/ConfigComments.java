@@ -41,4 +41,9 @@ public final class ConfigComments {
     @Comment("Should ops be hidden in the inspect mode?")
     public static String HIDE_OPS = "hide-ops";
 
+    @Comment("")
+    @Comment("Set a permission to use the inspect mode of WildInspect.")
+    @Comment("If you wish to disable the feature, set it to ''.")
+    public static String INSPECT_PERMISSION = "inspect-permission";
+
 }

@@ -18,6 +18,7 @@ public final class SettingsHandler {
     public final int historyLimitPage;
     public final long cooldown;
     public final boolean hideOps;
+    public final String inspectPermission;
 
     public SettingsHandler(WildInspectPlugin plugin){
         WildInspectPlugin.log("Loading configuration started...");
@@ -50,6 +51,7 @@ public final class SettingsHandler {
         historyLimitPage = cfg.getInt("history-limit.page", -1) == -1 ? Integer.MAX_VALUE : cfg.getInt("history-limit.page", -1);
         cooldown = cfg.getLong("cooldown", 5000);
         hideOps = cfg.getBoolean("hide-ops", true);
+        inspectPermission = cfg.getString("inspect-permission", "");
 
         WildInspectPlugin.log(" - Found " + commands.size() + " commands in config.yml.");
         WildInspectPlugin.log("Loading configuration done (Took " + (System.currentTimeMillis() - startTime) + "ms)");

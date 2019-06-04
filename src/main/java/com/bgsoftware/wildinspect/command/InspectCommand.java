@@ -44,6 +44,12 @@ public final class InspectCommand implements Listener {
         String[] args = e.getMessage().replace(label + " ", "").split(" ");
         Player pl = e.getPlayer();
 
+        if(!plugin.getSettings().inspectPermission.isEmpty() && !
+                e.getPlayer().hasPermission(plugin.getSettings().inspectPermission)){
+            Locale.NO_PERMISSION.send(e.getPlayer());
+            return;
+        }
+
         if(!plugin.getHooksHandler().hasRole(pl, plugin.getSettings().requiredRoles)){
             Locale.REQUIRED_ROLE.send(pl, format(plugin.getSettings().requiredRoles));
             return;

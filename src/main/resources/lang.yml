@@ -24,6 +24,9 @@ INSPECT_DATA_FOOTER: |-
   &f-----
   &fPage {0}/{1}. View older data by typing "&3/f inspect <page>&f".
 
+# Called when using the inspect command and lacking the permission.
+NO_PERMISSION: '&fUnknown command. Type "/help" for help.'
+
 # Called when trying to inspect a block not inside a claim.
 NOT_INSIDE_CLAIM: '&3WildInspect &f- Must be inside your claims to see block''s data.'
 

@@ -19,6 +19,7 @@ public final class Locale {
     public static Locale INSPECT_DATA_HEADER = new Locale("INSPECT_DATA_HEADER");
     public static Locale INSPECT_DATA_ROW = new Locale("INSPECT_DATA_ROW");
     public static Locale INSPECT_DATA_FOOTER = new Locale("INSPECT_DATA_FOOTER");
+    public static Locale NO_PERMISSION = new Locale("NO_PERMISSION");
     public static Locale NOT_INSIDE_CLAIM = new Locale("NOT_INSIDE_CLAIM");
     public static Locale LIMIT_REACH = new Locale("LIMIT_REACH");
     public static Locale NO_BLOCK_DATA = new Locale("NO_BLOCK_DATA");
