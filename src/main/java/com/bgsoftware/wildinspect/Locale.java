@@ -1,8 +1,9 @@
 package com.bgsoftware.wildinspect;
 
+import com.bgsoftware.wildinspect.config.CommentedConfiguration;
+import com.bgsoftware.wildinspect.config.LangComments;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.HashMap;
@@ -69,7 +70,8 @@ public final class Locale {
         if(!file.exists())
             WildInspectPlugin.getPlugin().saveResource("lang.yml", false);
 
-        YamlConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+        CommentedConfiguration cfg = new CommentedConfiguration(LangComments.class, file);
+        cfg.resetYamlFile(WildInspectPlugin.getPlugin(), "lang.yml");
 
         for(String identifier : localeMap.keySet()){
             localeMap.get(identifier).setMessage(ChatColor.translateAlternateColorCodes('&', cfg.getString(identifier, "")));
