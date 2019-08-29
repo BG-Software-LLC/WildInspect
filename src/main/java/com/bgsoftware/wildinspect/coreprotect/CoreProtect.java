@@ -121,7 +121,8 @@ public final class CoreProtect {
                             }
                         }
                         else if((matcher = Pattern.compile("§fPage (.*)/(.*). View older data by typing \"§3/co l <page>§f\".").matcher(line)).matches()){
-                            message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(matcher.group(1),
+                            int linePage = Integer.parseInt(matcher.group(1));
+                            message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
                                     Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
                         }
                     }
