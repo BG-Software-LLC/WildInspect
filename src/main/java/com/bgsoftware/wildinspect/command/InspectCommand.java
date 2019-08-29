@@ -5,6 +5,7 @@ import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.coreprotect.LookupType;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 
+import com.bgsoftware.wildinspect.utils.ItemUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,7 +70,7 @@ public final class InspectCommand implements Listener {
             int page;
 
             try{
-                page = Integer.valueOf(args[1]);
+                page = Integer.parseInt(args[1]);
             } catch(IllegalArgumentException ex){
                 Locale.SPECIFY_PAGE.send(pl);
                 return;
@@ -82,9 +83,24 @@ public final class InspectCommand implements Listener {
 
             Block bl = InspectPlayers.getBlock(pl);
 
-            if(!InspectPlayers.hasClickMode(pl) || InspectPlayers.getClickMode(pl) == Action.LEFT_CLICK_BLOCK)
+            Action clickMode = Action.LEFT_CLICK_BLOCK;
+            if(InspectPlayers.hasClickMode(pl))
+                clickMode = InspectPlayers.getClickMode(pl);
+
+            if(clickMode == Action.LEFT_CLICK_BLOCK) {
                 plugin.getCoreProtect().performLookup(LookupType.BLOCK_LOOKUP, pl, bl, page);
-            else plugin.getCoreProtect().performLookup(LookupType.INTERACTION_LOOKUP, pl, bl, page);
+            }
+
+            else if(clickMode == Action.RIGHT_CLICK_BLOCK) {
+                if(ItemUtils.isContainer(bl.getType())){
+                    plugin.getCoreProtect().performLookup(LookupType.CHEST_TRANSACTIONS, pl, bl, page);
+                    InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
+                }
+                else{
+                    plugin.getCoreProtect().performLookup(LookupType.INTERACTION_LOOKUP, pl, bl, page);
+                    InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
+                }
+            }
 
             return;
         }

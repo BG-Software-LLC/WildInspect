@@ -4,13 +4,11 @@ import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 import com.bgsoftware.wildinspect.coreprotect.LookupType;
 
+import com.bgsoftware.wildinspect.utils.ItemUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.Arrays;
-import java.util.List;
 
 @SuppressWarnings("unused")
 public final class BlockListener implements Listener {
@@ -37,8 +35,7 @@ public final class BlockListener implements Listener {
         }
 
         else if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            List<String> containers = Arrays.asList("DISPENSER", "CHEST", "FURNACE", "BURNING_FURNACE", "TRAPPED_CHEST", "HOPPER", "DROPPER");
-            if(containers.contains(e.getClickedBlock().getType().name())){
+            if(ItemUtils.isContainer(e.getClickedBlock().getType())){
                 plugin.getCoreProtect().performLookup(LookupType.CHEST_TRANSACTIONS, e.getPlayer(), e.getClickedBlock(), 0);
                 InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
             }
