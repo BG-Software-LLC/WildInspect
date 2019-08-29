@@ -13,7 +13,7 @@ import java.sql.Statement;
 public final class CoreProtectHook_API6 implements CoreProtectHook {
 
     @Override
-    public String[] performInteractLookup(Statement statement, Player player, Block block, int page){
+    public String[] performInteractLookup(Statement statement, Player player, Block block, BlockState blockState, int page){
         try{
             return ((String) Lookup.class.getMethod("interaction_lookup", Statement.class, Block.class, String.class, int.class, int.class, int.class)
                     .invoke(null, statement, block, player.getName(), 0, page, 7)).split("\n");
@@ -24,10 +24,10 @@ public final class CoreProtectHook_API6 implements CoreProtectHook {
     }
 
     @Override
-    public String[] performBlockLookup(Statement statement, Player player, Block block, int page){
+    public String[] performBlockLookup(Statement statement, Player player, Block block, BlockState blockState, int page){
         try{
             return ((String) Lookup.class.getMethod("block_lookup", Statement.class, BlockState.class, String.class, int.class, int.class, int.class)
-                    .invoke(null, statement, block.getState(), player.getName(), 0, page, 7)).split("\n");
+                    .invoke(null, statement, blockState, player.getName(), 0, page, 7)).split("\n");
         }catch(Exception ex){
             ex.printStackTrace();
             return new String[0];
@@ -35,7 +35,7 @@ public final class CoreProtectHook_API6 implements CoreProtectHook {
     }
 
     @Override
-    public String[] performChestLookup(Statement statement, Player player, Block block, int page){
+    public String[] performChestLookup(Statement statement, Player player, Block block, BlockState blockState, int page){
         try{
             return ((String) Lookup.class.getMethod("chest_transactions", Statement.class, Location.class, String.class, int.class, int.class, boolean.class)
                     .invoke(null, statement, block.getLocation(), player.getName(), page, 7, false)).split("\n");

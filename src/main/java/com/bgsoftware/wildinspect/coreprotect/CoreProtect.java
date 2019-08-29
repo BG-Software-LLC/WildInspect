@@ -7,6 +7,7 @@ import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -51,6 +52,8 @@ public final class CoreProtect {
             return;
         }
 
+        BlockState blockState = bl.getState();
+
         new Thread(() -> {
             try(Connection connection = Database.getConnection(false)){
                 if(connection == null){
@@ -59,7 +62,7 @@ public final class CoreProtect {
                 }
 
                 try(Statement statement = connection.createStatement()){
-                    int maxPage = getMaxPage(statement, type, pl, bl);
+                    int maxPage = getMaxPage(statement, type, pl, bl, blockState);
 
                     if(maxPage <= page){
                         Locale.LIMIT_REACH.send(pl);
@@ -70,13 +73,13 @@ public final class CoreProtect {
 
                     switch(type){
                         case INTERACTION_LOOKUP:
-                            resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, page);
+                            resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, blockState, page);
                             break;
                         case BLOCK_LOOKUP:
-                            resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, page);
+                            resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, blockState, page);
                             break;
                         case CHEST_TRANSACTIONS:
-                            resultLines = coreProtectHook.performChestLookup(statement, pl, bl, page);
+                            resultLines = coreProtectHook.performChestLookup(statement, pl, bl, blockState, page);
                             break;
                         default:
                             return;
@@ -131,7 +134,7 @@ public final class CoreProtect {
         }).start();
     }
 
-    private int getMaxPage(Statement statement, LookupType type, Player pl, Block bl){
+    private int getMaxPage(Statement statement, LookupType type, Player pl, Block bl, BlockState blockState){
         String[] resultLines;
 
         int maxPage = 0;
@@ -139,13 +142,13 @@ public final class CoreProtect {
         while(true) {
             switch(type){
                 case INTERACTION_LOOKUP:
-                    resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, maxPage);
+                    resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 case BLOCK_LOOKUP:
-                    resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, maxPage);
+                    resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
-                    resultLines = coreProtectHook.performChestLookup(statement, pl, bl, maxPage);
+                    resultLines = coreProtectHook.performChestLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 default:
                     return 0;
