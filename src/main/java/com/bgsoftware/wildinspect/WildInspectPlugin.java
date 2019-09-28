@@ -9,6 +9,7 @@ import com.bgsoftware.wildinspect.handlers.SettingsHandler;
 import com.bgsoftware.wildinspect.handlers.HooksHandler;
 import com.bgsoftware.wildinspect.listeners.BlockListener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WildInspectPlugin extends JavaPlugin {
@@ -25,35 +26,31 @@ public final class WildInspectPlugin extends JavaPlugin {
         plugin = this;
         new Metrics(this);
 
-        log("******** ENABLE START ********");
+        Bukkit.getScheduler().runTask(this, () -> {
+            log("******** ENABLE START ********");
 
-        if(!getServer().getPluginManager().isPluginEnabled("CoreProtect")){
-            log("Please install CoreProtect on your server.");
-            setEnabled(false);
-            return;
-        }
+            getServer().getPluginManager().registerEvents(new InspectCommand(this), this);
+            getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+            getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 
-        getServer().getPluginManager().registerEvents(new InspectCommand(this), this);
-        getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+            getCommand("wildinspect").setExecutor(new ReloadCommand());
+            getCommand("wildinspect").setTabCompleter(new ReloadCommand());
 
-        getCommand("wildinspect").setExecutor(new ReloadCommand());
-        getCommand("wildinspect").setTabCompleter(new ReloadCommand());
+            settingsHandler = new SettingsHandler(this);
+            hooksHandler = new HooksHandler(this);
+            coreProtect = new CoreProtect(this);
 
-        settingsHandler = new SettingsHandler(this);
-        hooksHandler = new HooksHandler(this);
-        coreProtect = new CoreProtect(this);
+            Locale.reload();
 
-        Locale.reload();
+            if(Updater.isOutdated()) {
+                log("");
+                log("A new version is available (v" + Updater.getLatestVersion() + ")!");
+                log("Version's description: \"" + Updater.getVersionDescription() + "\"");
+                log("");
+            }
 
-        if(Updater.isOutdated()) {
-            log("");
-            log("A new version is available (v" + Updater.getLatestVersion() + ")!");
-            log("Version's description: \"" + Updater.getVersionDescription() + "\"");
-            log("");
-        }
-
-        log("******** ENABLE DONE ********");
+            log("******** ENABLE DONE ********");
+        });
     }
 
     public SettingsHandler getSettings() {
