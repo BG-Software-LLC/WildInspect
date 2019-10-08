@@ -7,11 +7,14 @@ import com.bgsoftware.superiorskyblock.api.wrappers.SuperiorPlayer;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider{
 
     @Override
     public boolean hasRole(Player player, String... role) {
-        return true;
+        SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(player);
+        return superiorPlayer.getIsland() == null || Arrays.asList(role).contains(superiorPlayer.getPlayerRole().toString());
     }
 
     @Override
