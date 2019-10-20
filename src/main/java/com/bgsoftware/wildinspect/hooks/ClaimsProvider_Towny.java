@@ -13,7 +13,7 @@ import java.util.Arrays;
 public final class ClaimsProvider_Towny implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player player, String... roles) {
+    public boolean hasRole(Player player, Location location, String... roles) {
         try{
             Resident resident = TownyUniverse.getDataSource().getResident(player.getName());
             return Arrays.stream(roles).anyMatch(resident::hasTownRank) || (Arrays.asList(roles).contains("MAYOR") && resident.isMayor());

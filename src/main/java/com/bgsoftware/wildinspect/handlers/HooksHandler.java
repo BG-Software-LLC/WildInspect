@@ -27,9 +27,9 @@ public final class HooksHandler {
         Bukkit.getScheduler().runTask(plugin, this::loadHookups);
     }
 
-    public boolean hasRole(Player player, String... roles) {
+    public boolean hasRole(Player player, Location location, String... roles) {
         for(ClaimsProvider provider : claimsProviders){
-            if(!provider.hasRole(player, roles))
+            if(!provider.hasRole(player, location, roles))
                 return false;
         }
         return true;

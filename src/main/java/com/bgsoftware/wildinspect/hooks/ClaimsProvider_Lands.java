@@ -16,7 +16,7 @@ public final class ClaimsProvider_Lands implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, String... role) {
+    public boolean hasRole(Player player, Location location, String... role) {
         return true;
     }
 

@@ -13,7 +13,7 @@ import java.util.Arrays;
 public final class ClaimsProvider_FactionsUUID implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player player, String... roles){
+    public boolean hasRole(Player player, Location location, String... roles){
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         return Arrays.asList(roles).contains(fPlayer.getRole().name());
     }

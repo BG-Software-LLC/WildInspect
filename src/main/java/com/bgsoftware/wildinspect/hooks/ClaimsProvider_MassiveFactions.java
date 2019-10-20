@@ -12,7 +12,7 @@ import java.util.Arrays;
 public final class ClaimsProvider_MassiveFactions implements ClaimsProvider {
 
     @Override
-    public boolean hasRole(Player pl, String... roles){
+    public boolean hasRole(Player pl, Location location, String... roles){
         MPlayer mPlayer = MPlayer.get(pl);
         return Arrays.asList(roles).contains(mPlayer.getRole().name());
     }

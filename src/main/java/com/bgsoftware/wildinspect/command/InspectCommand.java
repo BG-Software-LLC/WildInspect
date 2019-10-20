@@ -6,6 +6,7 @@ import com.bgsoftware.wildinspect.coreprotect.LookupType;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 
 import com.bgsoftware.wildinspect.utils.ItemUtils;
+import com.bgsoftware.wildinspect.utils.StringUtils;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -51,11 +52,6 @@ public final class InspectCommand implements Listener {
             return;
         }
 
-        if(!plugin.getHooksHandler().hasRole(pl, plugin.getSettings().requiredRoles)){
-            Locale.REQUIRED_ROLE.send(pl, format(plugin.getSettings().requiredRoles));
-            return;
-        }
-
         if(args.length > 2){
             Locale.COMMAND_USAGE.send(pl, cmdLabel, "[page]");
             return;
@@ -82,6 +78,11 @@ public final class InspectCommand implements Listener {
             }
 
             Block bl = InspectPlayers.getBlock(pl);
+
+            if(!plugin.getHooksHandler().hasRole(pl, bl.getLocation(), plugin.getSettings().requiredRoles)){
+                Locale.REQUIRED_ROLE.send(pl, StringUtils.format(plugin.getSettings().requiredRoles));
+                return;
+            }
 
             Action clickMode = Action.LEFT_CLICK_BLOCK;
             if(InspectPlayers.hasClickMode(pl))
@@ -116,15 +117,6 @@ public final class InspectCommand implements Listener {
         }
 
 
-    }
-
-    private String format(String[] strings){
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for(String str : strings)
-            stringBuilder.append(", ").append(str);
-
-        return stringBuilder.substring(2);
     }
 
 }

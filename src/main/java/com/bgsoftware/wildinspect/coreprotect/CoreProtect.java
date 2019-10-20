@@ -3,6 +3,7 @@ package com.bgsoftware.wildinspect.coreprotect;
 import com.bgsoftware.wildinspect.Locale;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
+import com.bgsoftware.wildinspect.utils.StringUtils;
 import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -32,6 +33,11 @@ public final class CoreProtect {
     public void performLookup(LookupType type, Player pl, Block bl, int page) {
         if(!plugin.getHooksHandler().hasRegionAccess(pl, bl.getLocation())){
             Locale.NOT_INSIDE_CLAIM.send(pl);
+            return;
+        }
+
+        if(!plugin.getHooksHandler().hasRole(pl, bl.getLocation(), plugin.getSettings().requiredRoles)){
+            Locale.REQUIRED_ROLE.send(pl, StringUtils.format(plugin.getSettings().requiredRoles));
             return;
         }
 
