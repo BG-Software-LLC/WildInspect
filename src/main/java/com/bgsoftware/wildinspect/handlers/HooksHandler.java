@@ -63,7 +63,7 @@ public final class HooksHandler {
         }
         //Checks if Factions is installed
         if(Bukkit.getPluginManager().isPluginEnabled("Factions")){
-            if(Bukkit.getPluginManager().isPluginEnabled("MassiveCore")){
+            if(!Bukkit.getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("drtshock")){
                 claimsProviders.add(new ClaimsProvider_MassiveFactions());
                 WildInspectPlugin.log(" - Using MassiveFactions as ClaimsProvider.");
             }else {
