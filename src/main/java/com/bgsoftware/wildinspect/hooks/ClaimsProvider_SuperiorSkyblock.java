@@ -20,7 +20,7 @@ public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider{
         PlayersManager playersManager = SuperiorSkyblockAPI.getSuperiorSkyblock().getPlayers();
         PlayerRole playerRole = island == null || island.isMember(superiorPlayer) ? superiorPlayer.getPlayerRole() :
                 island.isCoop(superiorPlayer) ? playersManager.getCoopRole() : playersManager.getGuestRole();
-        return Arrays.asList(role).contains(playerRole.toString());
+        return Arrays.stream(role).anyMatch(_role -> playerRole.toString().equalsIgnoreCase(_role));
     }
 
     @Override
