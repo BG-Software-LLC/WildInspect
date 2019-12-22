@@ -13,6 +13,8 @@ import java.util.Arrays;
 
 public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider{
 
+    private static final String IIIllllIIIlllIllIII = "%%__USER__%%";
+
     @Override
     public boolean hasRole(Player player, Location location, String... role) {
         SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(player);
