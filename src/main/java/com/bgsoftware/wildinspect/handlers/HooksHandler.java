@@ -99,4 +99,8 @@ public final class HooksHandler {
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }
 
+    public List<ClaimsProvider> getClaimsProviders() {
+        return claimsProviders;
+    }
+
 }
