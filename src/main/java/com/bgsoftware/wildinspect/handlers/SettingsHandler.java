@@ -5,7 +5,6 @@ import com.bgsoftware.wildinspect.config.CommentedConfiguration;
 import com.bgsoftware.wildinspect.config.ConfigComments;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,14 +57,8 @@ public final class SettingsHandler {
     }
 
     public static void reload(){
-        try{
-            WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
-            Field settings = WildInspectPlugin.class.getDeclaredField("settingsHandler");
-            settings.setAccessible(true);
-            settings.set(plugin, new SettingsHandler(plugin));
-        } catch(NoSuchFieldException | IllegalAccessException ex){
-            ex.printStackTrace();
-        }
+        WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
+        plugin.setSettings(new SettingsHandler(plugin));
     }
 
 }

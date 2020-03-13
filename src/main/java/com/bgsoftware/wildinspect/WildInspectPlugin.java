@@ -57,6 +57,10 @@ public final class WildInspectPlugin extends JavaPlugin {
         return settingsHandler;
     }
 
+    public void setSettings(SettingsHandler settingsHandler){
+        this.settingsHandler = settingsHandler;
+    }
+
     public HooksHandler getHooksHandler() {
         return hooksHandler;
     }
