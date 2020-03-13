@@ -11,7 +11,7 @@ commands:
 - 'faction inspect'
 
 # A list of roles that can use the command.
-# FactionsUUID: RECRUIT, NORMAL, MODERATOR, ADMIN
+# FactionsUUID: RECRUIT, NORMAL, MODERATOR, COLEADER, ADMIN
 # MassiveFactions: RECRUIT, MEMBER, OFFICER, LEADER
 # Towny: configured.
 required-roles:

@@ -4,18 +4,33 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
+import com.massivecraft.factions.perms.Role;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public final class ClaimsProvider_FactionsUUID implements ClaimsProvider {
 
+    private static Method getRoleMethod;
+
+    static {
+        try{
+            getRoleMethod = FPlayer.class.getMethod("getRole");
+        }catch(Exception ignored){}
+    }
+
     @Override
     public boolean hasRole(Player player, Location location, String... roles){
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
-        return Arrays.asList(roles).contains(fPlayer.getRole().name());
+        try {
+            Role role = (Role) getRoleMethod.invoke(fPlayer);
+            return Arrays.asList(roles).contains(role.name());
+        }catch(Throwable ex){
+            return Arrays.asList(roles).contains(fPlayer.getRole().name());
+        }
     }
 
     @Override
