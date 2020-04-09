@@ -6,6 +6,7 @@ import com.bgsoftware.wildinspect.hooks.ClaimsProvider_ASkyBlock;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_AcidIsland;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_BentoBox;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsUUID;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsX;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
@@ -70,6 +71,10 @@ public final class HooksHandler {
                 claimsProviders.add(new ClaimsProvider_FactionsUUID());
                 WildInspectPlugin.log(" - Using FactionsUUID as ClaimsProvider.");
             }
+        }
+        //Checks if FactionsX is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("FactionsX")){
+            claimsProviders.add(new ClaimsProvider_FactionsX());
         }
         //Checks if GriefPrevention is installed
         if(Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")){
