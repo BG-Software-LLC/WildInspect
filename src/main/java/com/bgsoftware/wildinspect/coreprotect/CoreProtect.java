@@ -10,7 +10,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,12 +21,9 @@ import java.util.regex.Pattern;
 public final class CoreProtect {
 
     private final WildInspectPlugin plugin;
-    private final CoreProtectHook coreProtectHook;
 
     public CoreProtect(WildInspectPlugin plugin){
         this.plugin = plugin;
-        int apiVersion = JavaPlugin.getPlugin(net.coreprotect.CoreProtect.class).getAPI().APIVersion();
-        coreProtectHook = apiVersion == 5 ? new CoreProtectHook_API5() : new CoreProtectHook_API6();
     }
 
     public void performLookup(LookupType type, Player pl, Block bl, int page) {
@@ -79,13 +75,13 @@ public final class CoreProtect {
 
                     switch(type){
                         case INTERACTION_LOOKUP:
-                            resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, blockState, page);
                             break;
                         case BLOCK_LOOKUP:
-                            resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, page);
                             break;
                         case CHEST_TRANSACTIONS:
-                            resultLines = coreProtectHook.performChestLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, blockState, page);
                             break;
                         default:
                             return;
@@ -149,13 +145,13 @@ public final class CoreProtect {
         while(true) {
             switch(type){
                 case INTERACTION_LOOKUP:
-                    resultLines = coreProtectHook.performInteractLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 case BLOCK_LOOKUP:
-                    resultLines = coreProtectHook.performBlockLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
-                    resultLines = coreProtectHook.performChestLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 default:
                     return 0;
