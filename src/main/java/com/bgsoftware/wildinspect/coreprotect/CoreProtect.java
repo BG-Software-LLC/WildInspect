@@ -116,7 +116,7 @@ public final class CoreProtect {
                                 if (offlinePlayer != null && offlinePlayer.isOp())
                                     continue;
                             }
-                            double days = Double.parseDouble(matcher.group(1).split("/")[0]) / 24;
+                            double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
                             if(plugin.getSettings().historyLimitDate >= days) {
                                 empty = false;
                                 message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4)));
@@ -162,7 +162,7 @@ public final class CoreProtect {
 
             for (String line : resultLines) {
                 if ((matcher = Pattern.compile("§7(.*) §f- §3(.*) §f(.*) §3(.*)§f.").matcher(line)).matches()) {
-                    double days = Double.parseDouble(matcher.group(1).split("/")[0]) / 24;
+                    double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
                     if(plugin.getSettings().historyLimitDate >= days) {
                         amountOfRows++;
                     }
