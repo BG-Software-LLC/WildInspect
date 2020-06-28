@@ -1,14 +1,13 @@
 package com.bgsoftware.wildinspect.hooks;
 
-import net.prosavage.core.FPlayer;
-import net.prosavage.core.Faction;
-import net.prosavage.manager.GridManager;
-import net.prosavage.manager.PlayerManager;
-import net.prosavage.persist.data.FactionsKt;
+import net.prosavage.factionsx.core.FPlayer;
+import net.prosavage.factionsx.core.Faction;
+import net.prosavage.factionsx.manager.GridManager;
+import net.prosavage.factionsx.manager.PlayerManager;
+import net.prosavage.factionsx.persist.data.FactionsKt;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public final class ClaimsProvider_FactionsX implements ClaimsProvider {
