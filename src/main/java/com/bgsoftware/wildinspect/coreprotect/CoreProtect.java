@@ -20,6 +20,14 @@ import java.util.regex.Pattern;
 
 public final class CoreProtect {
 
+    private static final String COREPROTECT_COLOR = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].equals("v1_16_R1") ?
+            "§x§3§1§b§0§e§8" : "§3";
+
+    private static final Pattern NO_DATA_PATTERN = Pattern.compile("%sCoreProtect §f- §fNo (.*) found for (.*)\\.".replace("%s", COREPROTECT_COLOR));
+    private static final Pattern DATA_HEADER_PATTERN = Pattern.compile("§f----- %s(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)".replace("%s", COREPROTECT_COLOR));
+    private static final Pattern DATA_LINE_PATTERN = Pattern.compile("§7(.*) §f- %s(.*) §f(.*) %s(.*)§f\\.".replace("%s", COREPROTECT_COLOR));
+    private static final Pattern DATA_FOOTER_PATTERN = Pattern.compile("§fPage (.*)/(.*)\\. View older data by typing \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR));
+
     private final WildInspectPlugin plugin;
 
     public CoreProtect(WildInspectPlugin plugin){
@@ -56,7 +64,7 @@ public final class CoreProtect {
 
         BlockState blockState = bl.getState();
 
-        new Thread(() -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try(Connection connection = Database.getConnection(false)){
                 if(connection == null){
                     Bukkit.getScheduler().runTaskLater(plugin, () -> performLookup(type, pl, bl, page), 20L);
@@ -75,13 +83,13 @@ public final class CoreProtect {
 
                     switch(type){
                         case INTERACTION_LOOKUP:
-                            resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, page);
                             break;
                         case BLOCK_LOOKUP:
                             resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, page);
                             break;
                         case CHEST_TRANSACTIONS:
-                            resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, page);
                             break;
                         default:
                             return;
@@ -93,7 +101,7 @@ public final class CoreProtect {
                     boolean empty = true;
 
                     for(String line : resultLines){
-                        if((matcher = Pattern.compile("§3CoreProtect §f- §fNo (.*) found for (.*).").matcher(line)).matches()){
+                        if((matcher = NO_DATA_PATTERN.matcher(line)).matches()){
                             switch(matcher.group(1)){
                                 case "player interactions":
                                     message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(matcher.group(2)));
@@ -106,10 +114,10 @@ public final class CoreProtect {
                                     break;
                             }
                         }
-                        else if((matcher = Pattern.compile("§f----- §3(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)").matcher(line)).matches()){
+                        else if((matcher = DATA_HEADER_PATTERN.matcher(line)).matches()){
                             message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
                         }
-                        else if((matcher = Pattern.compile("§7(.*) §f- §3(.*) §f(.*) §3(.*)§f.").matcher(line)).matches()){
+                        else if((matcher = DATA_LINE_PATTERN.matcher(line)).matches()){
                             if(plugin.getSettings().hideOps) {
                                 //noinspection deprecation
                                 OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(matcher.group(2));
@@ -122,7 +130,7 @@ public final class CoreProtect {
                                 message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4)));
                             }
                         }
-                        else if((matcher = Pattern.compile("§fPage (.*)/(.*). View older data by typing \"§3/co l <page>§f\".").matcher(line)).matches()){
+                        else if((matcher = DATA_FOOTER_PATTERN.matcher(line)).matches()){
                             int linePage = Integer.parseInt(matcher.group(1));
                             message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
                                     Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
@@ -134,7 +142,7 @@ public final class CoreProtect {
             } catch(SQLException ex){
                 ex.printStackTrace();
             }
-        }).start();
+        });
     }
 
     private int getMaxPage(Statement statement, LookupType type, Player pl, Block bl, BlockState blockState){
@@ -145,13 +153,13 @@ public final class CoreProtect {
         while(true) {
             switch(type){
                 case INTERACTION_LOOKUP:
-                    resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, maxPage);
                     break;
                 case BLOCK_LOOKUP:
                     resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
-                    resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, maxPage);
                     break;
                 default:
                     return 0;
@@ -161,7 +169,7 @@ public final class CoreProtect {
             Matcher matcher;
 
             for (String line : resultLines) {
-                if ((matcher = Pattern.compile("§7(.*) §f- §3(.*) §f(.*) §3(.*)§f.").matcher(line)).matches()) {
+                if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
                     double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
                     if(plugin.getSettings().historyLimitDate >= days) {
                         amountOfRows++;
