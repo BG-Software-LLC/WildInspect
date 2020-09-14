@@ -10,3 +10,6 @@ commands:
   wildinspect:
     description: Reload configuration files
     aliases: [wi]
+permissions:
+  wildinspect.reload:
+    description: Access to reload configuration files

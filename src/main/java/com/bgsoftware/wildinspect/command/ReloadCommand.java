@@ -16,6 +16,11 @@ public final class ReloadCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if(!sender.hasPermission("wildinspect.reload")){
+            Locale.NO_PERMISSION.send(sender);
+            return false;
+        }
+
         if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
             new Thread(() -> {
                 SettingsHandler.reload();
