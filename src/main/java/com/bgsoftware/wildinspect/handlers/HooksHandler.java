@@ -9,6 +9,7 @@ import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsUUID;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsX;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lazarus;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Towny;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public final class HooksHandler {
 
-    private List<ClaimsProvider> claimsProviders = new ArrayList<>();
+    private final List<ClaimsProvider> claimsProviders = new ArrayList<>();
 
     public HooksHandler(WildInspectPlugin plugin){
         Bukkit.getScheduler().runTask(plugin, this::loadHookups);
@@ -75,6 +76,7 @@ public final class HooksHandler {
         //Checks if FactionsX is installed
         if(Bukkit.getPluginManager().isPluginEnabled("FactionsX")){
             claimsProviders.add(new ClaimsProvider_FactionsX());
+            WildInspectPlugin.log(" - Using FactionsX as ClaimsProvider.");
         }
         //Checks if GriefPrevention is installed
         if(Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")){
@@ -101,11 +103,12 @@ public final class HooksHandler {
             claimsProviders.add(new ClaimsProvider_Lands());
             WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
         }
+        //Checks if Lands is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("Lazarus")){
+            claimsProviders.add(new ClaimsProvider_Lazarus());
+            WildInspectPlugin.log(" - Using Lazarus as ClaimsProvider.");
+        }
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
-    }
-
-    public List<ClaimsProvider> getClaimsProviders() {
-        return claimsProviders;
     }
 
 }
