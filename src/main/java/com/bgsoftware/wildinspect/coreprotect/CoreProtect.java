@@ -20,8 +20,7 @@ import java.util.regex.Pattern;
 
 public final class CoreProtect {
 
-    private static final String COREPROTECT_COLOR = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].equals("v1_16_R1") ?
-            "§x§3§1§b§0§e§8" : "§3";
+    private static final String COREPROTECT_COLOR = is116OrAbove() ? "§x§3§1§b§0§e§8" : "§3";
 
     private static final Pattern NO_DATA_PATTERN = Pattern.compile("%sCoreProtect §f- §fNo (.*) found for (.*)\\.".replace("%s", COREPROTECT_COLOR));
     private static final Pattern DATA_HEADER_PATTERN = Pattern.compile("§f----- %s(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)".replace("%s", COREPROTECT_COLOR));
@@ -183,6 +182,12 @@ public final class CoreProtect {
 
             maxPage++;
         }
+    }
+
+    private static boolean is116OrAbove(){
+        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+        version = version.substring(1).replace("_", "").replace("R", "");
+        return Integer.parseInt(version) >= 1160;
     }
 
 }
