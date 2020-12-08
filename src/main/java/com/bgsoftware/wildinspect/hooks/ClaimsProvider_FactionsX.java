@@ -13,6 +13,11 @@ import java.util.Arrays;
 public final class ClaimsProvider_FactionsX implements ClaimsProvider {
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.FACTIONSX;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... roles){
         FPlayer fPlayer = PlayerManager.INSTANCE.getFPlayer(player);
         return Arrays.asList(roles).contains(fPlayer.getRole().getRoleTag().toUpperCase());

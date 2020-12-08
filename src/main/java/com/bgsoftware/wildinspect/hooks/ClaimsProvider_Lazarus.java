@@ -13,6 +13,11 @@ import java.util.Arrays;
 public final class ClaimsProvider_Lazarus implements ClaimsProvider {
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.LAZARUS;
+    }
+
+    @Override
     public boolean hasRole(Player pl, Location location, String... roles){
         PlayerFaction playerFaction = FactionsManager.getInstance().getPlayerFaction(pl);
         String roleName = playerFaction == null ? "" : playerFaction.getMember(pl).getRole().getName().toUpperCase();

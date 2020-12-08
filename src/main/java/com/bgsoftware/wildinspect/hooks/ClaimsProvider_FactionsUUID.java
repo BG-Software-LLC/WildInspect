@@ -23,6 +23,11 @@ public final class ClaimsProvider_FactionsUUID implements ClaimsProvider {
     }
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.FACTIONSUUID;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... roles){
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         try {

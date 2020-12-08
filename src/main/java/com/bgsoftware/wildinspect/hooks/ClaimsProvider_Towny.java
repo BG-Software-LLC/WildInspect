@@ -13,6 +13,11 @@ import java.util.Arrays;
 public final class ClaimsProvider_Towny implements ClaimsProvider {
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.TOWNY;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... roles) {
         try{
             Resident resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());

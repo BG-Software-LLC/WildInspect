@@ -3,6 +3,7 @@ package com.bgsoftware.wildinspect.command;
 import com.bgsoftware.wildinspect.Locale;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.coreprotect.LookupType;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 
 import com.bgsoftware.wildinspect.utils.ItemUtils;
@@ -20,7 +21,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 public final class InspectCommand implements Listener {
 
-    private WildInspectPlugin plugin;
+    private final WildInspectPlugin plugin;
 
     public InspectCommand(WildInspectPlugin plugin){
         this.plugin = plugin;
@@ -79,7 +80,8 @@ public final class InspectCommand implements Listener {
 
             Block bl = InspectPlayers.getBlock(pl);
 
-            if(!plugin.getHooksHandler().hasRole(pl, bl.getLocation(), plugin.getSettings().requiredRoles)){
+            ClaimsProvider.ClaimPlugin claimPlugin = plugin.getHooksHandler().getRegionAt(pl, bl.getLocation());
+            if(!plugin.getHooksHandler().hasRole(claimPlugin, pl, bl.getLocation(), plugin.getSettings().requiredRoles)){
                 Locale.REQUIRED_ROLE.send(pl, StringUtils.format(plugin.getSettings().requiredRoles));
                 return;
             }

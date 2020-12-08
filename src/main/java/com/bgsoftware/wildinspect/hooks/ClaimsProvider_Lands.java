@@ -9,11 +9,16 @@ import org.bukkit.entity.Player;
 
 public final class ClaimsProvider_Lands implements ClaimsProvider {
 
-    private LandsIntegration landsIntegration;
+    private final LandsIntegration landsIntegration;
 
     public ClaimsProvider_Lands(){
         landsIntegration = new LandsIntegration(WildInspectPlugin.getPlugin(), false);
         landsIntegration.initialize();
+    }
+
+    @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.LANDS;
     }
 
     @Override

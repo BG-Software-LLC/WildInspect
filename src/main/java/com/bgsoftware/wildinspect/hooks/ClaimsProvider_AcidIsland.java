@@ -9,6 +9,11 @@ import org.bukkit.entity.Player;
 public final class ClaimsProvider_AcidIsland implements ClaimsProvider {
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.ACID_ISLAND;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... role) {
         return true;
     }

@@ -9,6 +9,11 @@ import org.bukkit.entity.Player;
 public final class ClaimsProvider_ASkyBlock implements ClaimsProvider {
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.ASKYBLOCK;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... role) {
         return true;
     }

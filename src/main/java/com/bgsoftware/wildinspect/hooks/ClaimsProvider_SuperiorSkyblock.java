@@ -16,6 +16,11 @@ public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider{
     private static final IslandPrivilege BUILD_PRIVILEGE = IslandPrivilege.getByName("BUILD");
 
     @Override
+    public ClaimPlugin getClaimPlugin() {
+        return ClaimPlugin.SUPERIOR_SKYBLOCK;
+    }
+
+    @Override
     public boolean hasRole(Player player, Location location, String... role) {
         SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(player);
         Island island = SuperiorSkyblockAPI.getIslandAt(location);
