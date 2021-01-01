@@ -41,7 +41,6 @@ dependencies {
     // Spigot jar
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     // CoreProtect
-    compileOnly 'net.coreprotect:CoreProtect-5:latest'
     compileOnly 'net.coreprotect:CoreProtect-6:latest'
     // Plugin Hooks
     compileOnly 'com.wasteofplastic:AcidIsland:latest'

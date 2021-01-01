@@ -88,7 +88,7 @@ public final class CoreProtect {
                             resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, page);
                             break;
                         case BLOCK_LOOKUP:
-                            resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, page);
+                            resultLines = CoreProtectHook.performBlockLookup(statement, pl, blockState, page);
                             break;
                         case CHEST_TRANSACTIONS:
                             resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, page);
@@ -158,7 +158,7 @@ public final class CoreProtect {
                     resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, maxPage);
                     break;
                 case BLOCK_LOOKUP:
-                    resultLines = CoreProtectHook.performBlockLookup(statement, pl, bl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performBlockLookup(statement, pl, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
                     resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, maxPage);
