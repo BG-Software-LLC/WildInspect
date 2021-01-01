@@ -6,6 +6,7 @@ WildInspect 2 - Give your players the ability to inspect blocks inside their cla
 
 You can compile the project using gradlew.<br>
 Run `gradlew build` in console to build the project.<br>
+You can find already compiled jars on our [Jenkins](https://hub.bg-software.com/) hub!<br>
 You must add yourself all the private jars or purchase access to our private repository.
 
 ##### Private Jars:
