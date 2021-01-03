@@ -76,6 +76,7 @@ jar {
 
 shadowJar {
     dependsOn(jar)
+    println System.getenv("BUILD_NUMBER")
     archiveName = rootProject.name + ".jar"
     destinationDir = file("./target/")
     from sourceSets.getByName("main").output
