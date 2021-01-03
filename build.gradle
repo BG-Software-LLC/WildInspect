@@ -84,6 +84,10 @@ shadowJar {
         archiveName = rootProject.name + "-b" + System.getenv("BUILD_NUMBER") + ".jar"
     }
 
+    delete fileTree('./target/') {
+        exclude archiveName
+    }
+
     destinationDir = file("./target/")
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
