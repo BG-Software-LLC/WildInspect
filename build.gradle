@@ -76,8 +76,14 @@ jar {
 
 shadowJar {
     dependsOn(jar)
-    println System.getenv("BUILD_NUMBER")
-    archiveName = rootProject.name + ".jar"
+
+    if(System.getenv("BUILD_NUMBER") == null){
+        archiveName = rootProject.name + ".jar"
+    }
+    else{
+        archiveName = rootProject.name + "-b" + System.getenv("BUILD_NUMBER") + ".jar"
+    }
+
     destinationDir = file("./target/")
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
