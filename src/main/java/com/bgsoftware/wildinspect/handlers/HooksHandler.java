@@ -11,12 +11,16 @@ import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lazarus;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquared4;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquared5;
+import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquaredLegacy;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Towny;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Villages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -101,10 +105,24 @@ public final class HooksHandler {
             claimsProviders.put(ClaimsProvider.ClaimPlugin.LANDS, new ClaimsProvider_Lands());
             WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
         }
-        //Checks if Lands is installed
+        //Checks if Lazarus is installed
         if(Bukkit.getPluginManager().isPluginEnabled("Lazarus")){
             claimsProviders.put(ClaimsProvider.ClaimPlugin.LAZARUS, new ClaimsProvider_Lazarus());
             WildInspectPlugin.log(" - Using Lazarus as ClaimsProvider.");
+        }
+        //Checks if PlotSquared is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("PlotSquared")){
+            Plugin plugin = Bukkit.getPluginManager().getPlugin("PlotSquared");
+            if(plugin.getDescription().getVersion().startsWith("4")){
+                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquared4());
+            }
+            else if(plugin.getDescription().getVersion().startsWith("5")){
+                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquared5());
+            }
+            else{
+                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquaredLegacy());
+            }
+            WildInspectPlugin.log(" - Using PlotSquared as ClaimsProvider.");
         }
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }

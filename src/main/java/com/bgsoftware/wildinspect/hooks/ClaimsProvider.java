@@ -22,6 +22,7 @@ public interface ClaimsProvider {
         LANDS,
         LAZARUS,
         MASSIVE_FACTIONS,
+        PLOT_SQUARED,
         SUPERIOR_SKYBLOCK,
         TOWNY,
         VILLAGES,
