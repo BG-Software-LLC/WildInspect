@@ -22,6 +22,8 @@ repositories {
     maven { url 'https://repo.bg-software.com/repository/api/' }
     maven { url 'https://repo.bg-software.com/repository/public-libs/' }
 
+    maven { url = uri("https://mvn.intellectualsites.com/content/groups/public/") } // PlotSquared
+
     String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername');
     String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword');
 
@@ -51,13 +53,14 @@ dependencies {
     compileOnly 'com.drtshock:FactionsUUID-New:latest'
     compileOnly 'net.prosavage:FactionsX:latest'
     compileOnly 'me.ryanhamshire:GriefPrevention:latest'
-    compileOnly 'me.angeschossen:Lands:latest'
-    compileOnly 'me.qiooip:Lazarus:latest'
+    // compileOnly 'me.angeschossen:Lands:latest'
+    // compileOnly 'me.qiooip:Lazarus:latest'
     compileOnly 'com.massivecraft:Factions:latest'
     compileOnly 'com.massivecraft:MassiveCore:latest'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
     compileOnly 'com.palmergames:Towny:latest'
     compileOnly 'com.stefthedev:Villages:latest'
+    compileOnly 'com.plotsquared:PlotSquared-Core:5.13.3' // PlotSquared Core API
 }
 
 jar {

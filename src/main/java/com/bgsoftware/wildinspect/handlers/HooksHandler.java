@@ -1,19 +1,7 @@
 package com.bgsoftware.wildinspect.handlers;
 
 import com.bgsoftware.wildinspect.WildInspectPlugin;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_ASkyBlock;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_AcidIsland;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_BentoBox;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsUUID;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsX;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lazarus;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Towny;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Villages;
+import com.bgsoftware.wildinspect.hooks.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -96,16 +84,21 @@ public final class HooksHandler {
             claimsProviders.put(ClaimsProvider.ClaimPlugin.VILLAGES, new ClaimsProvider_Villages());
             WildInspectPlugin.log(" - Using Villages as ClaimsProvider.");
         }
-        //Checks if Lands is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Lands")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.LANDS, new ClaimsProvider_Lands());
-            WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
+        //Checks if PLotSquared is installed
+        if(Bukkit.getPluginManager().isPluginEnabled("PlotSquared")){
+            claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOTSQUARED, new ClaimsProvider_PlotSquared());
+            WildInspectPlugin.log(" - Using PlotSquared as ClaimsProvider.");
         }
         //Checks if Lands is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Lazarus")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.LAZARUS, new ClaimsProvider_Lazarus());
-            WildInspectPlugin.log(" - Using Lazarus as ClaimsProvider.");
-        }
+        //if(Bukkit.getPluginManager().isPluginEnabled("Lands")){
+        //    claimsProviders.put(ClaimsProvider.ClaimPlugin.LANDS, new ClaimsProvider_Lands());
+        //    WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
+        //}
+        ////Checks if Lands is installed
+        //if(Bukkit.getPluginManager().isPluginEnabled("Lazarus")){
+        //    claimsProviders.put(ClaimsProvider.ClaimPlugin.LAZARUS, new ClaimsProvider_Lazarus());
+        //    WildInspectPlugin.log(" - Using Lazarus as ClaimsProvider.");
+        //}
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }
 
