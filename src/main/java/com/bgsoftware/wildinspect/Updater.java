@@ -9,7 +9,7 @@ import java.net.URL;
 @SuppressWarnings({"WeakerAccess", "unchecked"})
 public final class Updater {
 
-    private static WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
+    private static final WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
     private static String latestVersion, versionDescription;
 
     static{
@@ -17,7 +17,7 @@ public final class Updater {
     }
 
     public static boolean isOutdated(){
-        return !plugin.getDescription().getVersion().equals(latestVersion);
+        return !plugin.getDescription().getVersion().startsWith(latestVersion);
     }
 
     public static String getLatestVersion(){
