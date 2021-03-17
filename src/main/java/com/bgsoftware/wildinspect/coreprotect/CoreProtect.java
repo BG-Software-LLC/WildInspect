@@ -5,6 +5,7 @@ import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 import com.bgsoftware.wildinspect.utils.StringUtils;
+import net.coreprotect.Functions;
 import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -26,7 +27,8 @@ public final class CoreProtect {
     private static final Pattern NO_DATA_PATTERN = Pattern.compile("%sCoreProtect §f- §fNo (.*) found for (.*)\\.".replace("%s", COREPROTECT_COLOR));
     private static final Pattern DATA_HEADER_PATTERN = Pattern.compile("§f----- %s(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)".replace("%s", COREPROTECT_COLOR));
     private static final Pattern DATA_LINE_PATTERN = Pattern.compile("§7(.*) §f- %s(.*) §f(.*) %s(.*)§f\\.".replace("%s", COREPROTECT_COLOR));
-    private static final Pattern DATA_FOOTER_PATTERN = Pattern.compile("§fPage (.*)/(.*)\\. View older data by typing \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR));
+    private static final Pattern DATA_FOOTER_PATTERN = isNewFooter() ? Pattern.compile("§f(◀ )?Page (.*)/(.*) (▶ )?\\| To view a page, type \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR)) :
+            Pattern.compile("§fPage (.*)/(.*)\\. View older data by typing \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR));
 
     private final WildInspectPlugin plugin;
 
@@ -191,6 +193,15 @@ public final class CoreProtect {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         version = version.substring(1).replace("_", "").replace("R", "");
         return Integer.parseInt(version) >= 1160;
+    }
+
+    private static boolean isNewFooter(){
+        try{
+            Functions.getPageNavigation("", 0, 1);
+            return true;
+        }catch (Throwable ex){
+            return false;
+        }
     }
 
 }
