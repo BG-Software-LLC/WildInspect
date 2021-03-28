@@ -1,29 +1,22 @@
-group 'WildInspect'
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'base'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'maven-publish'
+plugins {
+    id 'java'
+    id 'maven'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'maven-publish'
+}
 
+group 'WildInspect'
 version = "2.3.3"
 
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
-    }
-}
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     maven { url 'https://repo.bg-software.com/repository/nms/' }
     maven { url 'https://repo.bg-software.com/repository/api/' }
     maven { url 'https://repo.bg-software.com/repository/public-libs/' }
 
-    String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername');
-    String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword');
+    String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername')
+    String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword')
 
     if(mavenUsername != null && mavenPassword != null) {
         maven {
@@ -76,8 +69,6 @@ jar {
     }
 }
 
-
-
 shadowJar {
     dependsOn(jar)
 
@@ -99,14 +90,6 @@ shadowJar {
 
 build {
     dependsOn shadowJar
-    dependsOn publish
 }
 
-publish.shouldRunAfter shadowJar
 shadowJar.shouldRunAfter build
-
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
