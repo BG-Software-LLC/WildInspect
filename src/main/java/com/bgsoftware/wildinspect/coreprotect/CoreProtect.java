@@ -135,7 +135,7 @@ public final class CoreProtect {
                             }
                         }
                         else if((matcher = DATA_FOOTER_PATTERN.matcher(line)).matches()){
-                            int linePage = Integer.parseInt(matcher.group(1));
+                            int linePage = Integer.parseInt(matcher.group(2));
                             message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
                                     Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
                         }
