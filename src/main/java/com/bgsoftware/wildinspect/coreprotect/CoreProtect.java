@@ -152,7 +152,7 @@ public final class CoreProtect {
     private int getMaxPage(Statement statement, LookupType type, Player pl, Block bl, BlockState blockState){
         String[] resultLines;
 
-        int maxPage = 0;
+        int maxPage = 1;
 
         while(true) {
             switch(type){
