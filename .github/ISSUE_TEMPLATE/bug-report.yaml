@@ -7,7 +7,7 @@ body:
 - type: markdown
   attributes:
     value: |
-      ## WildInspect Bug Tracker
+      ## WildInspect Issues Tracker
       You may be able to find the answer on our [Wiki](https://wiki.bg-software.com/#/wildinspect/), or get a quick answer to basic questions on our [Discord](https://bg-software.com/discord/).
       Be sure to check for existing [Issues](https://github.com/BG-Software-LLC/WildInspect/issues).
       <br />
