@@ -29,7 +29,7 @@ public final class CoreProtectHook {
         if (INTERACTION_LOOKUP_METHOD.isValid()) {
             return parseResult(INTERACTION_LOOKUP_METHOD.invoke(null, statement, block, player.getName(), 0, page, 7));
         } else if (INTERACTION_LOOKUP_V20_METHOD.isValid()) {
-            return parseResult(INTERACTION_LOOKUP_V20_METHOD.invoke(null, statement, block, player, 0, page, 7));
+            return parseResult(INTERACTION_LOOKUP_V20_METHOD.invoke(null, null, statement, block, player, 0, page, 7));
         } else {
             return parseResult(Lookup.interactionLookup(null, statement, block, player, 0, page, 7));
         }
@@ -39,7 +39,7 @@ public final class CoreProtectHook {
         if (BLOCK_LOOKUP_METHOD.isValid()) {
             return parseResult(BLOCK_LOOKUP_METHOD.invoke(null, statement, blockState, player.getName(), 0, page, 7));
         } else if (BLOCK_LOOKUP_V20_METHOD.isValid()) {
-            return parseResult(BLOCK_LOOKUP_V20_METHOD.invoke(null, statement, blockState, player, 0, page, 7));
+            return parseResult(BLOCK_LOOKUP_V20_METHOD.invoke(null, null, statement, blockState, player, 0, page, 7));
         } else {
             return parseResult(BlockLookup.results(null, statement, blockState, player, 0, page, 7));
         }
@@ -49,7 +49,7 @@ public final class CoreProtectHook {
         if (CHEST_TRANSACTION_LOOKUP_METHOD.isValid()) {
             return parseResult(CHEST_TRANSACTION_LOOKUP_METHOD.invoke(null, statement, block.getLocation(), player.getName(), page, 7, false));
         } else if (CHEST_TRANSACTION_LOOKUP_V20_METHOD.isValid()) {
-            return parseResult(CHEST_TRANSACTION_LOOKUP_V20_METHOD.invoke(null, statement, block.getLocation(), player, page, 7, false));
+            return parseResult(CHEST_TRANSACTION_LOOKUP_V20_METHOD.invoke(null, null, statement, block.getLocation(), player, page, 7, false));
         } else {
             return parseResult(Lookup.chestTransactions(null, statement, block.getLocation(), player, page, 7, false));
         }
