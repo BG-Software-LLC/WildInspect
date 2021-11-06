@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'WildInspect'
-version = "2.3.3"
+version = "2.3.4"
 
 compileJava.options.encoding = 'UTF-8'
 
