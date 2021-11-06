@@ -30,20 +30,20 @@ public final class BlockListener implements Listener {
         e.setCancelled(true);
 
         if(e.getAction() == Action.LEFT_CLICK_BLOCK) {
-            plugin.getCoreProtect().performLookup(LookupType.BLOCK_LOOKUP, e.getPlayer(), e.getClickedBlock(), 0);
+            plugin.getCoreProtect().performLookup(LookupType.BLOCK_LOOKUP, e.getPlayer(), e.getClickedBlock(), 1);
             InspectPlayers.setClickMode(e.getPlayer(), Action.LEFT_CLICK_BLOCK);
         }
 
         else if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if(ItemUtils.isContainer(e.getClickedBlock().getType())){
-                plugin.getCoreProtect().performLookup(LookupType.CHEST_TRANSACTIONS, e.getPlayer(), e.getClickedBlock(), 0);
+                plugin.getCoreProtect().performLookup(LookupType.CHEST_TRANSACTIONS, e.getPlayer(), e.getClickedBlock(), 1);
                 InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
             }
             else if (e.getItem() != null && e.getItem().getType().isBlock()) {
-                plugin.getCoreProtect().performLookup(LookupType.BLOCK_LOOKUP, e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()), 0);
+                plugin.getCoreProtect().performLookup(LookupType.BLOCK_LOOKUP, e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()), 1);
                 InspectPlayers.setClickMode(e.getPlayer(), Action.LEFT_CLICK_BLOCK);
             }else{
-                plugin.getCoreProtect().performLookup(LookupType.INTERACTION_LOOKUP, e.getPlayer(), e.getClickedBlock(), 0);
+                plugin.getCoreProtect().performLookup(LookupType.INTERACTION_LOOKUP, e.getPlayer(), e.getClickedBlock(), 1);
                 InspectPlayers.setClickMode(e.getPlayer(), Action.RIGHT_CLICK_BLOCK);
             }
         }

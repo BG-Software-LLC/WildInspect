@@ -1,29 +1,23 @@
-group 'WildInspect'
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'base'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'maven-publish'
-
-version = "2.3.3"
-
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
-    }
+plugins {
+    id 'java'
+    id 'maven'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'maven-publish'
 }
+
+group 'WildInspect'
+version = "2.3.4"
+
+compileJava.options.encoding = 'UTF-8'
 
 repositories {
     maven { url 'https://repo.bg-software.com/repository/nms/' }
     maven { url 'https://repo.bg-software.com/repository/api/' }
     maven { url 'https://repo.bg-software.com/repository/public-libs/' }
+    maven { url 'https://repo.bg-software.com/repository/common/' }
 
-    String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername');
-    String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword');
+    String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername')
+    String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword')
 
     if(mavenUsername != null && mavenPassword != null) {
         maven {
@@ -38,10 +32,11 @@ repositories {
 }
 
 dependencies {
+    implementation 'com.bgsoftware.common.reflection:ReflectionUtils:latest'
+
     // Spigot jar
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     // CoreProtect
-    compileOnly 'net.coreprotect:CoreProtect-5:latest'
     compileOnly 'net.coreprotect:CoreProtect-6:latest'
     // Plugin Hooks
     compileOnly 'com.wasteofplastic:AcidIsland:latest'
@@ -55,6 +50,9 @@ dependencies {
     compileOnly 'me.qiooip:Lazarus:latest'
     compileOnly 'com.massivecraft:Factions:latest'
     compileOnly 'com.massivecraft:MassiveCore:latest'
+    compileOnly 'com.github.intellectualsites:PlotSquared-4:latest'
+    compileOnly 'com.github.intellectualsites:PlotSquared-5:latest'
+    compileOnly 'com.github.intellectualsites:PlotSquared-Legacy:latest'
     compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
     compileOnly 'com.palmergames:Towny:latest'
     compileOnly 'com.stefthedev:Villages:latest'
@@ -63,21 +61,31 @@ dependencies {
 jar {
     processResources {
         outputs.upToDateWhen {false}
+        String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
         eachFile { details ->
             if (details.name.contentEquals('plugin.yml')) {
                 filter { String line ->
-                    line.replace('${project.version}', version)
+                    line.replace('${project.version}', versionNumber)
                 }
             }
         }
     }
 }
 
-
-
 shadowJar {
     dependsOn(jar)
-    archiveName = rootProject.name + ".jar"
+
+    if(System.getenv("BUILD_NUMBER") == null){
+        archiveName = rootProject.name + "-" + version + ".jar"
+    }
+    else{
+        archiveName = rootProject.name + "-" + version + "-b" + System.getenv("BUILD_NUMBER") + ".jar"
+    }
+
+    delete fileTree('./target/') {
+        exclude archiveName
+    }
+
     destinationDir = file("./target/")
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
@@ -85,14 +93,6 @@ shadowJar {
 
 build {
     dependsOn shadowJar
-    dependsOn publish
 }
 
-publish.shouldRunAfter shadowJar
 shadowJar.shouldRunAfter build
-
-publishing {
-    repositories {
-        mavenLocal()
-    }
-}
