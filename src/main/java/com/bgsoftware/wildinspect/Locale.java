@@ -1,16 +1,17 @@
 package com.bgsoftware.wildinspect;
 
-import com.bgsoftware.wildinspect.config.CommentedConfiguration;
-import com.bgsoftware.wildinspect.config.LangComments;
+import com.bgsoftware.common.config.CommentedConfiguration;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class Locale {
 
+    private static final WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
     private static Map<String, Locale> localeMap = new HashMap<>();
 
     public static Locale COMMAND_USAGE = new Locale("COMMAND_USAGE");
@@ -65,13 +66,18 @@ public final class Locale {
         WildInspectPlugin.log("Loading messages started...");
         long startTime = System.currentTimeMillis();
         int messagesAmount = 0;
-        File file = new File(WildInspectPlugin.getPlugin().getDataFolder(), "lang.yml");
+        File file = new File(plugin.getDataFolder(), "lang.yml");
 
         if(!file.exists())
-            WildInspectPlugin.getPlugin().saveResource("lang.yml", false);
+            plugin.saveResource("lang.yml", false);
 
-        CommentedConfiguration cfg = new CommentedConfiguration(LangComments.class, file);
-        cfg.resetYamlFile(WildInspectPlugin.getPlugin(), "lang.yml");
+        CommentedConfiguration cfg = CommentedConfiguration.loadConfiguration(file);
+
+        try {
+            cfg.syncWithConfig(file, plugin.getResource("lang.yml"));
+        } catch (IOException error) {
+            error.printStackTrace();
+        }
 
         for(String identifier : localeMap.keySet()){
             localeMap.get(identifier).setMessage(ChatColor.translateAlternateColorCodes('&', cfg.getString(identifier, "")));

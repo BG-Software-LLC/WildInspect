@@ -1,10 +1,11 @@
 package com.bgsoftware.wildinspect.handlers;
 
+import com.bgsoftware.common.config.CommentedConfiguration;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
-import com.bgsoftware.wildinspect.config.CommentedConfiguration;
-import com.bgsoftware.wildinspect.config.ConfigComments;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,22 +28,14 @@ public final class SettingsHandler {
         if(!file.exists())
             plugin.saveResource("config.yml", false);
 
-        CommentedConfiguration cfg = new CommentedConfiguration(ConfigComments.class, file);
+        CommentedConfiguration cfg = CommentedConfiguration.loadConfiguration(file);
+        convertOldFile(cfg);
 
-        if(cfg.contains("factions.required-role")) {
-            //noinspection all
-            cfg.set("required-roles", Arrays.asList(cfg.getString("factions.required-role")));
-            cfg.set("factions", null);
-            cfg.save(file);
+        try {
+            cfg.syncWithConfig(file, plugin.getResource("config.yml"));
+        } catch (IOException error) {
+            error.printStackTrace();
         }
-        if(cfg.contains("command")) {
-            //noinspection all
-            cfg.set("commands", Arrays.asList(cfg.getString("command")));
-            cfg.set("command", null);
-            cfg.save(file);
-        }
-
-        cfg.resetYamlFile(plugin, "config.yml");
 
         requiredRoles = cfg.getStringList("required-roles").toArray(new String[]{});
         commands = new HashSet<>(cfg.getStringList("commands"));
@@ -59,6 +52,19 @@ public final class SettingsHandler {
     public static void reload(){
         WildInspectPlugin plugin = WildInspectPlugin.getPlugin();
         plugin.setSettings(new SettingsHandler(plugin));
+    }
+
+    private static void convertOldFile(YamlConfiguration cfg) {
+        if(cfg.contains("factions.required-role")) {
+            //noinspection all
+            cfg.set("required-roles", Arrays.asList(cfg.getString("factions.required-role")));
+            cfg.set("factions", null);
+        }
+        if(cfg.contains("command")) {
+            //noinspection all
+            cfg.set("commands", Arrays.asList(cfg.getString("command")));
+            cfg.set("command", null);
+        }
     }
 
 }
