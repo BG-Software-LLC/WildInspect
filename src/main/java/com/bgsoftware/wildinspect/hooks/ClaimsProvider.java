@@ -18,6 +18,7 @@ public interface ClaimsProvider {
         BENTOBOX,
         FACTIONSUUID,
         FACTIONSX,
+        GRIEF_DEFENDER,
         GRIEF_PREVENTION,
         LANDS,
         LAZARUS,

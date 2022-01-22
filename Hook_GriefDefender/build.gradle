@@ -1,0 +1,16 @@
+group 'Hook_GriefDefender'
+
+repositories {
+    maven { url 'https://repo.glaremasters.me/repository/bloodshot/' }
+}
+
+dependencies {
+    compileOnly "com.griefdefender:api:2.0.0-20211206.072436-12"
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly parent
+}
+
+if (project.hasProperty('hook.compile_griefdefender') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_griefdefender").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

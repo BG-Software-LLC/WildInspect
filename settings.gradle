@@ -25,4 +25,5 @@ include 'Hook_SuperiorSkyblock'
 include 'Hook_Towny'
 include 'Hook_Villages'
 include 'Hook_PlotSquared6'
+include 'Hook_GriefDefender'
 

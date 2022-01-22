@@ -77,6 +77,10 @@ public final class HooksHandler {
             Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsX");
             claimsProvider.ifPresent(this::registerClaimsProvider);
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("GriefDefender")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_GriefDefender");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
+        }
         if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
             Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_GriefPrevention");
             claimsProvider.ifPresent(this::registerClaimsProvider);
