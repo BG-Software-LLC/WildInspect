@@ -1,0 +1,12 @@
+group 'Hook_Lazarus'
+
+dependencies {
+    compileOnly 'me.qiooip:Lazarus:latest'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly parent
+}
+
+if (project.hasProperty('hook.compile_lazarus') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_lazarus").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

@@ -1,0 +1,12 @@
+group 'Hook_FactionsX'
+
+dependencies {
+    compileOnly 'net.prosavage:FactionsX:latest'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly parent
+}
+
+if (project.hasProperty('hook.compile_factionsx') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_factionsx").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

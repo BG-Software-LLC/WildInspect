@@ -1,0 +1,12 @@
+group 'Hook_Towny'
+
+dependencies {
+    compileOnly 'com.palmergames:Towny:latest'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly parent
+}
+
+if (project.hasProperty('hook.compile_towny') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_towny").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

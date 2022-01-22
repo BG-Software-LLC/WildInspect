@@ -2,34 +2,25 @@ package com.bgsoftware.wildinspect.handlers;
 
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_ASkyBlock;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_AcidIsland;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_BentoBox;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsUUID;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_FactionsX;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_GriefPrevention;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lands;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Lazarus;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_MassiveFactions;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquared4;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquared5;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_PlotSquaredLegacy;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_SuperiorSkyblock;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Towny;
-import com.bgsoftware.wildinspect.hooks.ClaimsProvider_Villages;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 public final class HooksHandler {
 
     private final EnumMap<ClaimsProvider.ClaimPlugin, ClaimsProvider> claimsProviders = new EnumMap<>(ClaimsProvider.ClaimPlugin.class);
 
-    public HooksHandler(WildInspectPlugin plugin){
+    private final WildInspectPlugin plugin;
+
+    public HooksHandler(WildInspectPlugin plugin) {
+        this.plugin = plugin;
         Bukkit.getScheduler().runTask(plugin, this::loadHookups);
     }
 
@@ -39,92 +30,118 @@ public final class HooksHandler {
     }
 
     public ClaimsProvider.ClaimPlugin getRegionAt(Player player, Location location) {
-        for(Map.Entry<ClaimsProvider.ClaimPlugin, ClaimsProvider> entry : claimsProviders.entrySet()) {
-            if(entry.getValue().hasRegionAccess(player, location))
+        for (Map.Entry<ClaimsProvider.ClaimPlugin, ClaimsProvider> entry : claimsProviders.entrySet()) {
+            if (entry.getValue().hasRegionAccess(player, location))
                 return entry.getKey();
         }
 
         return claimsProviders.isEmpty() ? ClaimsProvider.ClaimPlugin.DEFAULT : ClaimsProvider.ClaimPlugin.NONE;
     }
 
-    private void loadHookups(){
+    private void registerClaimsProvider(ClaimsProvider claimsProvider) {
+        this.claimsProviders.put(claimsProvider.getClaimPlugin(), claimsProvider);
+    }
+
+    private void loadHookups() {
         WildInspectPlugin.log("Loading providers started...");
         long startTime = System.currentTimeMillis();
-        //Checks if AcidIsland is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("AcidIsland")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.ACID_ISLAND, new ClaimsProvider_AcidIsland());
-            WildInspectPlugin.log(" - Using AcidIsland as ClaimsProvider.");
+
+        if (Bukkit.getPluginManager().isPluginEnabled("AcidIsland")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_AcidIsland");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if ASkyBlock is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.ASKYBLOCK, new ClaimsProvider_ASkyBlock());
-            WildInspectPlugin.log(" - Using ASkyBlock as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("ASkyBlock")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_ASkyBlock");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if BentoBox is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("BentoBox")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.BENTOBOX, new ClaimsProvider_BentoBox());
-            WildInspectPlugin.log(" - Using BentoBox as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("BentoBox")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_BentoBox");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if Factions is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Factions")){
-            if(!Bukkit.getPluginManager().getPlugin("Factions").getDescription().getAuthors().contains("drtshock")){
-                claimsProviders.put(ClaimsProvider.ClaimPlugin.MASSIVE_FACTIONS, new ClaimsProvider_MassiveFactions());
-                WildInspectPlugin.log(" - Using MassiveFactions as ClaimsProvider.");
-            }else {
-                claimsProviders.put(ClaimsProvider.ClaimPlugin.FACTIONSUUID, new ClaimsProvider_FactionsUUID());
-                WildInspectPlugin.log(" - Using FactionsUUID as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
+            Plugin factions = Bukkit.getPluginManager().getPlugin("Factions");
+            if (factions.getDescription().getAuthors().contains("drtshock")) {
+                if (factions.getDescription().getVersion().startsWith("1.6.9.5-U0.5")) {
+                    Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsUUID05");
+                    claimsProvider.ifPresent(this::registerClaimsProvider);
+                } else {
+                    Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsUUID02");
+                    claimsProvider.ifPresent(this::registerClaimsProvider);
+                }
+            } else {
+                Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_MassiveFactions");
+                claimsProvider.ifPresent(this::registerClaimsProvider);
             }
         }
-        //Checks if FactionsX is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("FactionsX")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.FACTIONSX, new ClaimsProvider_FactionsX());
-            WildInspectPlugin.log(" - Using FactionsX as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("FactionsX")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsX");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if GriefPrevention is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.GRIEF_PREVENTION, new ClaimsProvider_GriefPrevention());
-            WildInspectPlugin.log(" - Using GriefPrevention as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("GriefPrevention")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_GriefPrevention");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if SuperiorSkyblock is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("SuperiorSkyblock2")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.SUPERIOR_SKYBLOCK, new ClaimsProvider_SuperiorSkyblock());
-            WildInspectPlugin.log(" - Using SuperiorSkyblock as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("Lands")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Lands");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if Towny is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Towny")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.TOWNY, new ClaimsProvider_Towny());
-            WildInspectPlugin.log(" - Using Towny as ClaimsProvider.");
+        if (Bukkit.getPluginManager().isPluginEnabled("Lazarus")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Lazarus");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
         }
-        //Checks if Villages is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Villages")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.VILLAGES, new ClaimsProvider_Villages());
-            WildInspectPlugin.log(" - Using Villages as ClaimsProvider.");
-        }
-        //Checks if Lands is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Lands")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.LANDS, new ClaimsProvider_Lands());
-            WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
-        }
-        //Checks if Lazarus is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("Lazarus")){
-            claimsProviders.put(ClaimsProvider.ClaimPlugin.LAZARUS, new ClaimsProvider_Lazarus());
-            WildInspectPlugin.log(" - Using Lazarus as ClaimsProvider.");
-        }
-        //Checks if PlotSquared is installed
-        if(Bukkit.getPluginManager().isPluginEnabled("PlotSquared")){
+        if (Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("PlotSquared");
-            if(plugin.getDescription().getVersion().startsWith("4")){
-                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquared4());
+            if (plugin.getDescription().getVersion().startsWith("5.")) {
+                Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_PlotSquared5");
+                claimsProvider.ifPresent(this::registerClaimsProvider);
+            } else if (plugin.getDescription().getMain().contains("com.github")) {
+                Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_PlotSquared4");
+                claimsProvider.ifPresent(this::registerClaimsProvider);
+            } else {
+                Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_PlotSquaredLegacy");
+                claimsProvider.ifPresent(this::registerClaimsProvider);
             }
-            else if(plugin.getDescription().getVersion().startsWith("5")){
-                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquared5());
-            }
-            else{
-                claimsProviders.put(ClaimsProvider.ClaimPlugin.PLOT_SQUARED, new ClaimsProvider_PlotSquaredLegacy());
-            }
-            WildInspectPlugin.log(" - Using PlotSquared as ClaimsProvider.");
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_SuperiorSkyblock");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Towny");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
+        }
+        if (Bukkit.getPluginManager().isPluginEnabled("Villages")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Villages");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
+        }
+
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
+    }
+
+    private <T> Optional<T> createInstance(String className) {
+        try {
+            Class<?> clazz = Class.forName("com.bgsoftware.wildinspect.hooks." + className);
+            try {
+                Method compatibleMethod = clazz.getDeclaredMethod("isCompatible");
+                if (!(boolean) compatibleMethod.invoke(null))
+                    return Optional.empty();
+            } catch (Exception ignored) {
+            }
+
+            try {
+                Constructor<?> constructor = clazz.getConstructor(WildInspectPlugin.class);
+                // noinspection unchecked
+                return Optional.of((T) constructor.newInstance(plugin));
+            } catch (Exception error) {
+                // noinspection unchecked
+                return Optional.of((T) clazz.newInstance());
+            }
+        } catch (ClassNotFoundException ignored) {
+            return Optional.empty();
+        } catch (Exception error) {
+            error.printStackTrace();
+            return Optional.empty();
+        }
     }
 
 }

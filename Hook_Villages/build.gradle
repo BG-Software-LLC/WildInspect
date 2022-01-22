@@ -1,0 +1,12 @@
+group 'Hook_Villages'
+
+dependencies {
+    compileOnly 'com.stefthedev:Villages:latest'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly parent
+}
+
+if (project.hasProperty('hook.compile_villages') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_villages").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

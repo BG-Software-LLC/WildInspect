@@ -1,34 +1,50 @@
 plugins {
     id 'java'
-    id 'maven'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'maven-publish'
 }
 
 group 'WildInspect'
 version = "2.3.4"
 
-compileJava.options.encoding = 'UTF-8'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-repositories {
-    maven { url 'https://repo.bg-software.com/repository/nms/' }
-    maven { url 'https://repo.bg-software.com/repository/api/' }
-    maven { url 'https://repo.bg-software.com/repository/public-libs/' }
-    maven { url 'https://repo.bg-software.com/repository/common/' }
+    repositories {
+        maven { url 'https://repo.bg-software.com/repository/nms/' }
+        maven { url 'https://repo.bg-software.com/repository/api/' }
+        maven { url 'https://repo.bg-software.com/repository/common/' }
+        maven { url 'https://repo.bg-software.com/repository/public-libs/' }
 
-    String mavenUsername = project.hasProperty('mavenUsername') ? project.mavenUsername : System.getenv('mavenUsername')
-    String mavenPassword = project.hasProperty('mavenPassword') ? project.mavenPassword : System.getenv('mavenPassword')
+        String mavenUsername = System.getenv('mavenUsername') == null ? project.mavenUsername : System.getenv('mavenUsername');
+        String mavenPassword = System.getenv('mavenPassword') == null ? project.mavenUsername : System.getenv('mavenPassword');
 
-    if(mavenUsername != null && mavenPassword != null) {
-        maven {
-            url 'https://repo.bg-software.com/repository/private-libs/'
-            credentials {
-                username mavenUsername
-                password mavenPassword
+        if (mavenUsername != null && mavenPassword != null) {
+            maven {
+                url 'https://repo.bg-software.com/repository/private-libs/'
+                credentials {
+                    username mavenUsername
+                    password mavenPassword
+                }
             }
         }
     }
 
+    dependencies {
+        compileOnly "com.bgsoftware.common.reflection:ReflectionUtils:latest"
+    }
+
+    build {
+        dependsOn shadowJar
+    }
+}
+
+subprojects {
+    shadowJar {
+        archiveFileName = "${project.name}.jar"
+        destinationDirectory = file("../archive/")
+    }
 }
 
 dependencies {
@@ -40,34 +56,23 @@ dependencies {
     // CoreProtect
     compileOnly 'net.coreprotect:CoreProtect-6:latest'
     // Plugin Hooks
-    compileOnly 'com.wasteofplastic:AcidIsland:latest'
-    compileOnly 'com.wasteofplastic:ASkyblock:latest'
-    compileOnly 'world.bentobox:BentoBox:latest'
-    compileOnly 'com.drtshock:FactionsUUID:latest'
-    compileOnly 'com.drtshock:FactionsUUID-New:latest'
-    compileOnly 'net.prosavage:FactionsX:latest'
-    compileOnly 'me.ryanhamshire:GriefPrevention:latest'
-    compileOnly 'me.angeschossen:Lands:latest'
-    compileOnly 'me.qiooip:Lazarus:latest'
-    compileOnly 'com.massivecraft:Factions:latest'
-    compileOnly 'com.massivecraft:MassiveCore:latest'
-    compileOnly 'com.github.intellectualsites:PlotSquared-4:latest'
-    compileOnly 'com.github.intellectualsites:PlotSquared-5:latest'
-    compileOnly 'com.github.intellectualsites:PlotSquared-Legacy:latest'
-    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:latest'
-    compileOnly 'com.palmergames:Towny:latest'
-    compileOnly 'com.stefthedev:Villages:latest'
 }
 
 jar {
-    processResources {
-        outputs.upToDateWhen {false}
-        String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
-        eachFile { details ->
-            if (details.name.contentEquals('plugin.yml')) {
-                filter { String line ->
-                    line.replace('${project.version}', versionNumber)
-                }
+    from {
+        for (File file : new File("archive").listFiles()) {
+            zipTree(file)
+        }
+    }
+}
+
+processResources {
+    outputs.upToDateWhen {false}
+    String versionNumber = System.getenv("BUILD_NUMBER") == null ? version : version + "." + System.getenv("BUILD_NUMBER")
+    eachFile { details ->
+        if (details.name.contentEquals('plugin.yml')) {
+            filter { String line ->
+                line.replace('${project.version}', versionNumber)
             }
         }
     }
@@ -92,8 +97,24 @@ shadowJar {
     configurations = [project.configurations.getByName("runtimeClasspath")]
 }
 
-build {
-    dependsOn shadowJar
+task copyAPI(type: Copy) {
+    from './archive/API.jar'
+    into './target/'
+    rename('API.jar', rootProject.name + 'API.jar')
 }
 
+clean {
+    delete file('./archive/')
+}
+
+build {
+    dependsOn shadowJar
+    dependsOn copyAPI
+    dependsOn clean
+}
+
+publish.shouldRunAfter shadowJar
 shadowJar.shouldRunAfter build
+build.shouldRunAfter subprojects.build
+
+compileJava.options.encoding = 'UTF-8'
