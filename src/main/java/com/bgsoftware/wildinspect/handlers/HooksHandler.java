@@ -91,7 +91,14 @@ public final class HooksHandler {
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlotSquared")) {
             Plugin plugin = Bukkit.getPluginManager().getPlugin("PlotSquared");
-            if (plugin.getDescription().getVersion().startsWith("5.")) {
+            if (plugin.getDescription().getVersion().startsWith("6.")) {
+                try {
+                    Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_PlotSquared6");
+                    claimsProvider.ifPresent(this::registerClaimsProvider);
+                } catch (Exception ex) {
+                    WildInspectPlugin.log("&cYour version of PlotSquared is not supported. Please contact Ome_R for support.");
+                }
+            } else if (plugin.getDescription().getVersion().startsWith("5.")) {
                 Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_PlotSquared5");
                 claimsProvider.ifPresent(this::registerClaimsProvider);
             } else if (plugin.getDescription().getMain().contains("com.github")) {
