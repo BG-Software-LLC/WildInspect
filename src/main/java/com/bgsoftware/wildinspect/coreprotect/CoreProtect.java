@@ -8,7 +8,6 @@ import com.bgsoftware.wildinspect.utils.StringUtils;
 import net.coreprotect.Functions;
 import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
@@ -17,6 +16,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,143 +33,146 @@ public final class CoreProtect {
 
     private final WildInspectPlugin plugin;
 
-    public CoreProtect(WildInspectPlugin plugin){
+    public CoreProtect(WildInspectPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void performLookup(LookupType type, Player pl, Block bl, int page) {
-        ClaimsProvider.ClaimPlugin claimPlugin = plugin.getHooksHandler().getRegionAt(pl, bl.getLocation());
+    public void performLookup(LookupType type, Player player, Block block, int page) {
+        ClaimsProvider.ClaimPlugin claimPlugin = plugin.getHooksHandler().getRegionAt(player, block.getLocation());
 
-        if(claimPlugin == ClaimsProvider.ClaimPlugin.NONE){
-            Locale.NOT_INSIDE_CLAIM.send(pl);
+        if (claimPlugin == ClaimsProvider.ClaimPlugin.NONE) {
+            Locale.NOT_INSIDE_CLAIM.send(player);
             return;
         }
 
-        if(!plugin.getHooksHandler().hasRole(claimPlugin, pl, bl.getLocation(), plugin.getSettings().requiredRoles)){
-            Locale.REQUIRED_ROLE.send(pl, StringUtils.format(plugin.getSettings().requiredRoles));
+        if (!plugin.getHooksHandler().hasRole(claimPlugin, player, block.getLocation(), plugin.getSettings().requiredRoles)) {
+            Locale.REQUIRED_ROLE.send(player, StringUtils.format(plugin.getSettings().requiredRoles));
             return;
         }
 
-        if(InspectPlayers.isCooldown(pl)){
+        if (InspectPlayers.isCooldown(player)) {
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(2);
-            Locale.COOLDOWN.send(pl, df.format(InspectPlayers.getTimeLeft(pl) / 1000));
+            Locale.COOLDOWN.send(player, df.format(InspectPlayers.getTimeLeft(player) / 1000));
             return;
         }
 
-        if(plugin.getSettings().cooldown != -1)
-            InspectPlayers.setCooldown(pl);
+        if (plugin.getSettings().cooldown != -1)
+            InspectPlayers.setCooldown(player);
 
-        InspectPlayers.setBlock(pl, bl);
+        InspectPlayers.setBlock(player, block);
 
-        if(plugin.getSettings().historyLimitPage < page){
-            Locale.LIMIT_REACH.send(pl);
+        if (plugin.getSettings().historyLimitPage < page) {
+            Locale.LIMIT_REACH.send(player);
             return;
         }
 
-        BlockState blockState = bl.getState();
+        BlockState blockState = block.getState();
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try(Connection connection = Database.getConnection(false)){
-                if(connection == null){
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> performLookup(type, pl, bl, page), 20L);
+        List<String> operators = new ArrayList<>();
+        Bukkit.getServer().getOperators().forEach(operator -> operators.add(operator.getName()));
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+                performDatabaseLookup(type, player, block, blockState, page, operators));
+    }
+
+    private void performDatabaseLookup(LookupType type, Player player, Block block, BlockState blockState, int page,
+                                       List<String> ignoredPlayers) {
+        try (Connection connection = Database.getConnection(true)) {
+            if (connection == null) {
+                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () ->
+                        performDatabaseLookup(type, player, block, blockState, page, ignoredPlayers), 5L);
+                return;
+            }
+
+            String[] resultLines;
+            int maxPage;
+
+            try (Statement statement = connection.createStatement()) {
+                maxPage = getMaxPage(statement, type, player, block, blockState);
+
+                if (maxPage <= page) {
+                    Locale.LIMIT_REACH.send(player);
                     return;
                 }
 
-                try(Statement statement = connection.createStatement()){
-                    int maxPage = getMaxPage(statement, type, pl, bl, blockState);
-
-                    if(maxPage <= page){
-                        Locale.LIMIT_REACH.send(pl);
+                switch (type) {
+                    case INTERACTION_LOOKUP:
+                        resultLines = CoreProtectHook.performInteractLookup(statement, player, block, page);
+                        break;
+                    case BLOCK_LOOKUP:
+                        resultLines = CoreProtectHook.performBlockLookup(statement, player, blockState, page);
+                        break;
+                    case CHEST_TRANSACTIONS:
+                        resultLines = CoreProtectHook.performChestLookup(statement, player, block, page);
+                        break;
+                    default:
                         return;
-                    }
-
-                    String[] resultLines;
-
-                    switch(type){
-                        case INTERACTION_LOOKUP:
-                            resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, page);
-                            break;
-                        case BLOCK_LOOKUP:
-                            resultLines = CoreProtectHook.performBlockLookup(statement, pl, blockState, page);
-                            break;
-                        case CHEST_TRANSACTIONS:
-                            resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, page);
-                            break;
-                        default:
-                            return;
-                    }
-
-                    Matcher matcher;
-
-                    StringBuilder message = new StringBuilder();
-                    boolean empty = true;
-
-                    for(String line : resultLines){
-                        if((matcher = NO_DATA_PATTERN.matcher(line)).matches()){
-                            switch(matcher.group(1)){
-                                case "player interactions":
-                                    message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(matcher.group(2)));
-                                    break;
-                                case "block data":
-                                    message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(matcher.group(2)));
-                                    break;
-                                case "container transactions":
-                                    message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(matcher.group(2)));
-                                    break;
-                            }
-                        }
-                        else if((matcher = DATA_HEADER_PATTERN.matcher(line)).matches()){
-                            message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
-                        }
-                        else if((matcher = DATA_LINE_PATTERN.matcher(line)).matches()){
-                            if(plugin.getSettings().hideOps) {
-                                //noinspection deprecation
-                                OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(matcher.group(2));
-                                if (offlinePlayer != null && offlinePlayer.isOp())
-                                    continue;
-                            }
-                            double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
-                            if(plugin.getSettings().historyLimitDate >= days) {
-                                empty = false;
-                                String timeOfAction = matcher.group(1).trim();
-                                String playerAction = matcher.group(5).trim();
-                                String actionType = matcher.group(5).trim();
-                                String blockAction = matcher.group(6).trim();
-                                message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(timeOfAction,
-                                        playerAction, actionType, blockAction));
-                            }
-                        }
-                        else if((matcher = DATA_FOOTER_PATTERN.matcher(line)).matches()){
-                            int linePage = Integer.parseInt(matcher.group(2));
-                            message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
-                                    Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
-                        }
-                    }
-
-                    pl.sendMessage(empty ? Locale.NO_BLOCK_DATA.getMessage("that page") : message.substring(1));
                 }
-            } catch(SQLException ex){
-                ex.printStackTrace();
             }
-        });
+
+            Matcher matcher;
+
+            StringBuilder message = new StringBuilder();
+            boolean empty = true;
+
+            for (String line : resultLines) {
+                if ((matcher = NO_DATA_PATTERN.matcher(line)).matches()) {
+                    switch (matcher.group(1)) {
+                        case "player interactions":
+                            message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(matcher.group(2)));
+                            break;
+                        case "block data":
+                            message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(matcher.group(2)));
+                            break;
+                        case "container transactions":
+                            message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(matcher.group(2)));
+                            break;
+                    }
+                } else if ((matcher = DATA_HEADER_PATTERN.matcher(line)).matches()) {
+                    message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
+                } else if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
+                    if (plugin.getSettings().hideOps && ignoredPlayers.contains(matcher.group(2)))
+                        continue;
+
+                    double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
+                    if (plugin.getSettings().historyLimitDate >= days) {
+                        empty = false;
+                        String timeOfAction = matcher.group(1).trim();
+                        String playerAction = matcher.group(4).trim();
+                        String actionType = matcher.group(5).trim();
+                        String blockAction = matcher.group(6).trim();
+                        message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(timeOfAction,
+                                playerAction, actionType, blockAction));
+                    }
+                } else if ((matcher = DATA_FOOTER_PATTERN.matcher(line)).matches()) {
+                    int linePage = Integer.parseInt(matcher.group(2));
+                    message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
+                            Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
+                }
+            }
+
+            player.sendMessage(empty ? Locale.NO_BLOCK_DATA.getMessage("that page") : message.substring(1));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
-    private int getMaxPage(Statement statement, LookupType type, Player pl, Block bl, BlockState blockState){
+    private int getMaxPage(Statement statement, LookupType type, Player player, Block block, BlockState blockState) {
         String[] resultLines;
 
         int maxPage = 1;
 
-        while(true) {
-            switch(type){
+        while (true) {
+            switch (type) {
                 case INTERACTION_LOOKUP:
-                    resultLines = CoreProtectHook.performInteractLookup(statement, pl, bl, maxPage);
+                    resultLines = CoreProtectHook.performInteractLookup(statement, player, block, maxPage);
                     break;
                 case BLOCK_LOOKUP:
-                    resultLines = CoreProtectHook.performBlockLookup(statement, pl, blockState, maxPage);
+                    resultLines = CoreProtectHook.performBlockLookup(statement, player, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
-                    resultLines = CoreProtectHook.performChestLookup(statement, pl, bl, maxPage);
+                    resultLines = CoreProtectHook.performChestLookup(statement, player, block, maxPage);
                     break;
                 default:
                     return 0;
@@ -180,7 +184,7 @@ public final class CoreProtect {
             for (String line : resultLines) {
                 if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
                     double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
-                    if(plugin.getSettings().historyLimitDate >= days) {
+                    if (plugin.getSettings().historyLimitDate >= days) {
                         amountOfRows++;
                     }
                 }
@@ -194,17 +198,17 @@ public final class CoreProtect {
         }
     }
 
-    private static boolean is116OrAbove(){
+    private static boolean is116OrAbove() {
         String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
         version = version.substring(1).replace("_", "").replace("R", "");
         return Integer.parseInt(version) >= 1160;
     }
 
-    private static boolean isNewFooter(){
-        try{
+    private static boolean isNewFooter() {
+        try {
             Functions.getPageNavigation("", 0, 1);
             return true;
-        }catch (Throwable ex){
+        } catch (Throwable ex) {
             return false;
         }
     }
