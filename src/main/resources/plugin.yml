@@ -4,7 +4,7 @@ main: com.bgsoftware.wildinspect.WildInspectPlugin
 description: Inspect block changes, chest transactions and more!
 website: https://bg-software.com/
 author: Ome_R
-depends: CoreProtect
+depend: [CoreProtect]
 softdepend: [AcidIsland, ASkyBlock, BentoBox, Factions, GriefPrevention, SuperiorSkyblock, Towny, Villages]
 commands:
   wildinspect:
