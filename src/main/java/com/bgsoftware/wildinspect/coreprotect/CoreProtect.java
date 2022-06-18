@@ -26,7 +26,7 @@ public final class CoreProtect {
 
     private static final Pattern NO_DATA_PATTERN = Pattern.compile("%sCoreProtect §f- §fNo (.*) found for (.*)\\.".replace("%s", COREPROTECT_COLOR));
     private static final Pattern DATA_HEADER_PATTERN = Pattern.compile("§f----- %s(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)".replace("%s", COREPROTECT_COLOR));
-    private static final Pattern DATA_LINE_PATTERN = Pattern.compile("§7(.*) (§f-|§a\\+) %s(.*)§f(.*) %s(.*)§f\\.".replace("%s", COREPROTECT_COLOR));
+    private static final Pattern DATA_LINE_PATTERN = Pattern.compile("§7(.*) ((§f|§c)-|§a\\+) %s(.*)§f(.*) %s(.*)§f\\.".replace("%s", COREPROTECT_COLOR));
     private static final Pattern DATA_FOOTER_PATTERN = isNewFooter() ? Pattern.compile("§f(◀ )?Page (.*)/(.*) (▶ )?\\| To view a page, type \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR)) :
             Pattern.compile("§fPage (.*)/(.*)\\. View older data by typing \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR));
 
@@ -132,9 +132,9 @@ public final class CoreProtect {
                             if(plugin.getSettings().historyLimitDate >= days) {
                                 empty = false;
                                 String timeOfAction = matcher.group(1).trim();
-                                String playerAction = matcher.group(3).trim();
-                                String actionType = matcher.group(4).trim();
-                                String blockAction = matcher.group(5).trim();
+                                String playerAction = matcher.group(5).trim();
+                                String actionType = matcher.group(5).trim();
+                                String blockAction = matcher.group(6).trim();
                                 message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(timeOfAction,
                                         playerAction, actionType, blockAction));
                             }
