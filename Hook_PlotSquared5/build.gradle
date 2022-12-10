@@ -1,7 +1,7 @@
 group 'Hook_PlotSquared5'
 
 dependencies {
-    compileOnly 'com.github.intellectualsites:PlotSquared-5:latest'
+    compileOnly 'com.github.intellectualsites:PlotSquared:5.10.4'
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     compileOnly parent
 }

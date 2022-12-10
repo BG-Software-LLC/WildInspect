@@ -15,11 +15,6 @@
 You can compile the project using gradlew.<br>
 Run `gradlew build` in console to build the project.<br>
 You can find already compiled jars on our [Jenkins](https://hub.bg-software.com/) hub!<br>
-You must add yourself all the private jars or purchase access to our private repository.
-
-##### Private Jars:
-- Lands by Angeschossen [[link]](https://www.spigotmc.org/resources/53313/)
-- Lazarus by qIooIp [[link]](https://www.mc-market.org/resources/11362/)
 
 ## Updates
 

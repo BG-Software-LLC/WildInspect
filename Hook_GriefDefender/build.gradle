@@ -1,11 +1,7 @@
 group 'Hook_GriefDefender'
 
-repositories {
-    maven { url 'https://repo.glaremasters.me/repository/bloodshot/' }
-}
-
 dependencies {
-    compileOnly "com.griefdefender:api:2.0.0-20211206.072436-12"
+    compileOnly "com.griefdefender:GriefDefender:2.0.0"
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     compileOnly parent
 }

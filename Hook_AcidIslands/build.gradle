@@ -1,7 +1,7 @@
 group 'Hook_AcidIslands'
 
 dependencies {
-    compileOnly "com.wasteofplastic:AcidIsland:latest"
+    compileOnly "com.wasteofplastic:AcidIsland:3.0.8.6"
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     compileOnly parent
 }
