@@ -132,7 +132,7 @@ public final class CoreProtect {
                 } else if ((matcher = DATA_HEADER_PATTERN.matcher(line)).matches()) {
                     message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
                 } else if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
-                    if (plugin.getSettings().hideOps && ignoredPlayers.contains(matcher.group(2)))
+                    if (plugin.getSettings().hideOps && ignoredPlayers.contains(matcher.group(4)))
                         continue;
 
                     double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
