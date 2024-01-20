@@ -1,0 +1,12 @@
+group 'Hooks:GriefDefender'
+
+dependencies {
+    compileOnly "com.griefdefender:GriefDefender:2.0.0"
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_griefdefender') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_griefdefender").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

@@ -1,0 +1,12 @@
+group 'Hooks:AcidIslands'
+
+dependencies {
+    compileOnly "com.wasteofplastic:AcidIsland:3.0.8.6"
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_acidislands') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_acidislands").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}
