@@ -1,11 +1,7 @@
 group 'Hook_Towny'
 
-repositories {
-    maven { url 'https://repo.glaremasters.me/repository/towny/' }
-}
-
 dependencies {
-    compileOnly 'com.palmergames.bukkit.towny:towny:0.98.0.0'
+    compileOnly 'com.palmergames:Towny:0.98.0.0'
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     compileOnly parent
 }

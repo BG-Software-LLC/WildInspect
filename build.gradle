@@ -5,7 +5,14 @@ plugins {
 }
 
 group 'WildInspect'
-version = "2.4.1"
+version = "2024.1"
+
+project.ext {
+    archiveFolder = file("archive/")
+    targetFolder = file("target/")
+    buildVersion = System.getenv("BUILD_NUMBER") == null || Boolean.parseBoolean(System.getenv("STABLE_BUILD")) ?
+            version : version + "-b" + System.getenv("BUILD_NUMBER")
+}
 
 project.ext {
     archiveFolder = file("archive/")

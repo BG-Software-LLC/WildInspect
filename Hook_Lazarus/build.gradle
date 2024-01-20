@@ -1,7 +1,7 @@
 group 'Hook_Lazarus'
 
 dependencies {
-    compileOnly 'me.qiooip:Lazarus:latest'
+    compileOnly 'me.qiooip:Lazarus:0.9.6'
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
     compileOnly parent
 }
