@@ -14,13 +14,6 @@ project.ext {
             version : version + "-b" + System.getenv("BUILD_NUMBER")
 }
 
-project.ext {
-    archiveFolder = file("archive/")
-    targetFolder = file("target/")
-    buildVersion = System.getenv("BUILD_NUMBER") == null || Boolean.parseBoolean(System.getenv("STABLE_BUILD")) ?
-            version : version + "-b" + System.getenv("BUILD_NUMBER")
-}
-
 allprojects {
     apply plugin: 'java'
     apply plugin: 'com.github.johnrengelman.shadow'

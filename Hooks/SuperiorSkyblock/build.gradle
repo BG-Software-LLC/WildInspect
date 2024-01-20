@@ -1,0 +1,12 @@
+group 'Hooks:SuperiorSkyblock'
+
+dependencies {
+    compileOnly 'com.bgsoftware:SuperiorSkyblockAPI:1.8.3'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_superiorskyblock') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_superiorskyblock").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}
