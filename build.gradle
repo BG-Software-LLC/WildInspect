@@ -59,6 +59,7 @@ dependencies {
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
 
     implementation 'com.bgsoftware.common.reflection:ReflectionUtils:b3'
+    implementation 'com.bgsoftware.common.updater:Updater:b1'
     implementation 'com.bgsoftware.common.config:CommentedConfiguration:b1'
 
     implementation 'org.bstats:bstats-bukkit:3.0.0'

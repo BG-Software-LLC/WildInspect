@@ -1,5 +1,6 @@
 package com.bgsoftware.wildinspect;
 
+import com.bgsoftware.common.updater.Updater;
 import com.bgsoftware.wildinspect.command.InspectCommand;
 import com.bgsoftware.wildinspect.command.ReloadCommand;
 import com.bgsoftware.wildinspect.coreprotect.CoreProtect;
@@ -12,6 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WildInspectPlugin extends JavaPlugin {
+
+    private final Updater updater = new Updater(this, "wildinspect");
 
     private static WildInspectPlugin plugin;
 
@@ -41,10 +44,10 @@ public final class WildInspectPlugin extends JavaPlugin {
 
             Locale.reload();
 
-            if (Updater.isOutdated()) {
+            if (updater.isOutdated()) {
                 log("");
-                log("A new version is available (v" + Updater.getLatestVersion() + ")!");
-                log("Version's description: \"" + Updater.getVersionDescription() + "\"");
+                log("A new version is available (v" + updater.getLatestVersion() + ")!");
+                log("Version's description: \"" + updater.getVersionDescription() + "\"");
                 log("");
             }
 
@@ -66,6 +69,10 @@ public final class WildInspectPlugin extends JavaPlugin {
 
     public CoreProtect getCoreProtect() {
         return coreProtect;
+    }
+
+    public Updater getUpdater() {
+        return updater;
     }
 
     public static void log(String message) {

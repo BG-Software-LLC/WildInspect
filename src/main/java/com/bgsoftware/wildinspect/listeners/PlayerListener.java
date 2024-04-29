@@ -1,6 +1,5 @@
 package com.bgsoftware.wildinspect.listeners;
 
-import com.bgsoftware.wildinspect.Updater;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +14,7 @@ public final class PlayerListener implements Listener {
     Just notifies me if the server is using WildBuster
      */
 
-    private WildInspectPlugin plugin;
+    private final WildInspectPlugin plugin;
 
     public PlayerListener(WildInspectPlugin plugin){
         this.plugin = plugin;
@@ -29,10 +28,10 @@ public final class PlayerListener implements Listener {
                         ChatColor.GRAY + "This server is using WildInspect v" + plugin.getDescription().getVersion()), 5L);
         }
 
-        if(e.getPlayer().isOp() && Updater.isOutdated()){
+        if(e.getPlayer().isOp() && plugin.getUpdater().isOutdated()){
             Bukkit.getScheduler().runTaskLater(plugin, () ->
                 e.getPlayer().sendMessage(ChatColor.RED + "" + ChatColor.BOLD + "WildInspect" + ChatColor.GRAY +
-                        " A new version is available (v" + Updater.getLatestVersion() + ")!"), 20L);
+                        " A new version is available (v" + plugin.getUpdater().getLatestVersion() + ")!"), 20L);
         }
 
     }
