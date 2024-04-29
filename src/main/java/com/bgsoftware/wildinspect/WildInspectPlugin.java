@@ -3,12 +3,11 @@ package com.bgsoftware.wildinspect;
 import com.bgsoftware.wildinspect.command.InspectCommand;
 import com.bgsoftware.wildinspect.command.ReloadCommand;
 import com.bgsoftware.wildinspect.coreprotect.CoreProtect;
-import com.bgsoftware.wildinspect.listeners.PlayerListener;
-import com.bgsoftware.wildinspect.metrics.Metrics;
-import com.bgsoftware.wildinspect.handlers.SettingsHandler;
 import com.bgsoftware.wildinspect.handlers.HooksHandler;
+import com.bgsoftware.wildinspect.handlers.SettingsHandler;
 import com.bgsoftware.wildinspect.listeners.BlockListener;
-
+import com.bgsoftware.wildinspect.listeners.PlayerListener;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +23,7 @@ public final class WildInspectPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        new Metrics(this);
+        new Metrics(this, 4104);
 
         Bukkit.getScheduler().runTask(this, () -> {
             log("******** ENABLE START ********");
@@ -42,7 +41,7 @@ public final class WildInspectPlugin extends JavaPlugin {
 
             Locale.reload();
 
-            if(Updater.isOutdated()) {
+            if (Updater.isOutdated()) {
                 log("");
                 log("A new version is available (v" + Updater.getLatestVersion() + ")!");
                 log("Version's description: \"" + Updater.getVersionDescription() + "\"");
@@ -57,7 +56,7 @@ public final class WildInspectPlugin extends JavaPlugin {
         return settingsHandler;
     }
 
-    public void setSettings(SettingsHandler settingsHandler){
+    public void setSettings(SettingsHandler settingsHandler) {
         this.settingsHandler = settingsHandler;
     }
 
@@ -69,11 +68,11 @@ public final class WildInspectPlugin extends JavaPlugin {
         return coreProtect;
     }
 
-    public static void log(String message){
+    public static void log(String message) {
         plugin.getLogger().info(message);
     }
 
-    public static WildInspectPlugin getPlugin(){
+    public static WildInspectPlugin getPlugin() {
         return plugin;
     }
 
