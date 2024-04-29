@@ -1,5 +1,6 @@
 package com.bgsoftware.wildinspect.coreprotect;
 
+import com.bgsoftware.common.reflection.ClassInfo;
 import com.bgsoftware.common.reflection.ReflectMethod;
 import net.coreprotect.database.Lookup;
 import net.coreprotect.database.lookup.BlockLookup;
@@ -17,13 +18,22 @@ public final class CoreProtectHook {
 
     private static final Pattern COMPONENT_PATTERN = Pattern.compile("<COMPONENT>(.*)\\|(.*)\\|(.*)</COMPONENT>");
 
-    private static final ReflectMethod<String> INTERACTION_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class, "interaction_lookup", Statement.class, Block.class, String.class, int.class, int.class, int.class);
-    private static final ReflectMethod<String> BLOCK_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class, "block_lookup", Statement.class, BlockState.class, String.class, int.class, int.class, int.class);
-    private static final ReflectMethod<String> CHEST_TRANSACTION_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class, "chest_transactions", Statement.class, Location.class, String.class, int.class, int.class, boolean.class);
+    private static final ReflectMethod<String> INTERACTION_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class,
+            "interaction_lookup", Statement.class, Block.class, String.class, int.class, int.class, int.class);
+    private static final ReflectMethod<String> BLOCK_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class,
+            "block_lookup", Statement.class, BlockState.class, String.class, int.class, int.class, int.class);
+    private static final ReflectMethod<String> CHEST_TRANSACTION_LOOKUP_METHOD = new ReflectMethod<>(Lookup.class,
+            "chest_transactions", Statement.class, Location.class, String.class, int.class, int.class, boolean.class);
 
-    private static final ReflectMethod<String> INTERACTION_LOOKUP_V20_METHOD = new ReflectMethod<>("net.coreprotect.database.lookup.InteractionLookup", "performLookup", String.class, Statement.class, Block.class, CommandSender.class, int.class, int.class, int.class);
-    private static final ReflectMethod<String> BLOCK_LOOKUP_V20_METHOD = new ReflectMethod<>("net.coreprotect.database.lookup.BlockLookup", "performLookup", String.class, Statement.class, BlockState.class, CommandSender.class, int.class, int.class, int.class);
-    private static final ReflectMethod<String> CHEST_TRANSACTION_LOOKUP_V20_METHOD = new ReflectMethod<>("net.coreprotect.database.lookup.ChestTransactionLookup", "performLookup", String.class, Statement.class, Location.class, CommandSender.class, int.class, int.class, boolean.class);
+    private static final ReflectMethod<String> INTERACTION_LOOKUP_V20_METHOD = new ReflectMethod<>(
+            new ClassInfo("net.coreprotect.database.lookup.InteractionLookup", ClassInfo.PackageType.UNKNOWN),
+            "performLookup", String.class, Statement.class, Block.class, CommandSender.class, int.class, int.class, int.class);
+    private static final ReflectMethod<String> BLOCK_LOOKUP_V20_METHOD = new ReflectMethod<>(
+            new ClassInfo("net.coreprotect.database.lookup.BlockLookup", ClassInfo.PackageType.UNKNOWN),
+            "performLookup", String.class, Statement.class, BlockState.class, CommandSender.class, int.class, int.class, int.class);
+    private static final ReflectMethod<String> CHEST_TRANSACTION_LOOKUP_V20_METHOD = new ReflectMethod<>(
+            new ClassInfo("net.coreprotect.database.lookup.ChestTransactionLookup", ClassInfo.PackageType.UNKNOWN),
+            "performLookup", String.class, Statement.class, Location.class, CommandSender.class, int.class, int.class, boolean.class);
 
     public static String[] performInteractLookup(Statement statement, Player player, Block block, int page) {
         if (INTERACTION_LOOKUP_METHOD.isValid()) {
