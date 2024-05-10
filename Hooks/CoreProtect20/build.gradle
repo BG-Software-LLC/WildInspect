@@ -1,0 +1,7 @@
+group 'Hooks:CoreProtect20'
+
+dependencies {
+    compileOnly 'net.coreprotect:CoreProtect:20.4'
+    compileOnly "org.spigotmc:v1_16_R3:latest"
+    compileOnly rootProject
+}

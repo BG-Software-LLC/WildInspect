@@ -66,8 +66,6 @@ dependencies {
 
     // Spigot jar
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
-    // CoreProtect
-    compileOnly 'net.coreprotect:CoreProtect:19.0'
 }
 
 jar {

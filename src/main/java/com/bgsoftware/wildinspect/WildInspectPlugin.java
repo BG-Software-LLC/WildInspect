@@ -31,6 +31,14 @@ public final class WildInspectPlugin extends JavaPlugin {
         Bukkit.getScheduler().runTask(this, () -> {
             log("******** ENABLE START ********");
 
+            try {
+                coreProtect = new CoreProtect(this);
+            } catch (Exception error) {
+                error.printStackTrace();
+                Bukkit.getPluginManager().disablePlugin(this);
+                return;
+            }
+
             getServer().getPluginManager().registerEvents(new InspectCommand(this), this);
             getServer().getPluginManager().registerEvents(new BlockListener(this), this);
             getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -40,7 +48,6 @@ public final class WildInspectPlugin extends JavaPlugin {
 
             settingsHandler = new SettingsHandler(this);
             hooksHandler = new HooksHandler(this);
-            coreProtect = new CoreProtect(this);
 
             Locale.reload();
 
