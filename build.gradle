@@ -26,7 +26,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly "com.bgsoftware.common.reflection:ReflectionUtils:b3"
+        compileOnly "com.bgsoftware.common.reflection:ReflectionUtils:b5"
     }
 
     task checkDebug() {
@@ -58,7 +58,7 @@ repositories {
 dependencies {
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
 
-    implementation 'com.bgsoftware.common.reflection:ReflectionUtils:b3'
+    implementation 'com.bgsoftware.common.reflection:ReflectionUtils:b5'
     implementation 'com.bgsoftware.common.updater:Updater:b1'
     implementation 'com.bgsoftware.common.config:CommentedConfiguration:b1'
 
