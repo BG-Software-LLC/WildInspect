@@ -2,15 +2,19 @@ package com.bgsoftware.wildinspect.coreprotect;
 
 import com.bgsoftware.wildinspect.Locale;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
+import com.bgsoftware.wildinspect.coreprotect.lookup.DataResultLine;
+import com.bgsoftware.wildinspect.coreprotect.lookup.FooterResultLine;
+import com.bgsoftware.wildinspect.coreprotect.lookup.HeaderResultLine;
+import com.bgsoftware.wildinspect.coreprotect.lookup.LookupResultLine;
+import com.bgsoftware.wildinspect.coreprotect.lookup.NoDataResultLine;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 import com.bgsoftware.wildinspect.utils.StringUtils;
-import net.coreprotect.Functions;
-import net.coreprotect.database.Database;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,23 +22,16 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 public final class CoreProtect {
 
-    private static final String COREPROTECT_COLOR = is116OrAbove() ? "§x§3§1§b§0§e§8" : "§3";
-
-    private static final Pattern NO_DATA_PATTERN = Pattern.compile("%sCoreProtect §f- §fNo (.*) found for (.*)\\.".replace("%s", COREPROTECT_COLOR));
-    private static final Pattern DATA_HEADER_PATTERN = Pattern.compile("§f----- %s(.*) §f----- §7\\(x(.*)/y(.*)/z(.*)\\)".replace("%s", COREPROTECT_COLOR));
-    private static final Pattern DATA_LINE_PATTERN = Pattern.compile("§7(.*) ((§f|§c)-|§a\\+) %s(.*)§f(.*) %s(.*)§f\\.".replace("%s", COREPROTECT_COLOR));
-    private static final Pattern DATA_FOOTER_PATTERN = isNewFooter() ? Pattern.compile("§f(◀ )?Page (.*)/(.*) (▶ )?\\| To view a page, type \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR)) :
-            Pattern.compile("§fPage (.*)/(.*)\\. View older data by typing \"%s/co l <page>§f\"\\.".replace("%s", COREPROTECT_COLOR));
-
     private final WildInspectPlugin plugin;
+    private final CoreProtectProvider coreProtectProvider;
 
     public CoreProtect(WildInspectPlugin plugin) {
         this.plugin = plugin;
+        this.coreProtectProvider = loadCoreProtectProvider();
     }
 
     public void performLookup(LookupType type, Player player, Block block, int page) {
@@ -78,119 +75,134 @@ public final class CoreProtect {
 
     private void performDatabaseLookup(LookupType type, Player player, Block block, BlockState blockState, int page,
                                        List<String> ignoredPlayers) {
-        try (Connection connection = Database.getConnection(true)) {
+        try (Connection connection = this.coreProtectProvider.getConnection()) {
             if (connection == null) {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () ->
                         performDatabaseLookup(type, player, block, blockState, page, ignoredPlayers), 5L);
                 return;
             }
 
-            String[] resultLines;
+            List<LookupResultLine> resultLines;
             int maxPage;
 
             try (Statement statement = connection.createStatement()) {
                 maxPage = getMaxPage(statement, type, player, block, blockState);
 
-                if (maxPage <= page) {
+                if (maxPage < page) {
                     Locale.LIMIT_REACH.send(player);
                     return;
                 }
 
                 switch (type) {
                     case INTERACTION_LOOKUP:
-                        resultLines = CoreProtectHook.performInteractLookup(statement, player, block, page);
+                        resultLines = this.coreProtectProvider.performInteractLookup(statement, player, block, page);
                         break;
                     case BLOCK_LOOKUP:
-                        resultLines = CoreProtectHook.performBlockLookup(statement, player, blockState, page);
+                        resultLines = this.coreProtectProvider.performBlockLookup(statement, player, blockState, page);
                         break;
                     case CHEST_TRANSACTIONS:
-                        resultLines = CoreProtectHook.performChestLookup(statement, player, block, page);
+                        resultLines = this.coreProtectProvider.performChestLookup(statement, player, block, page);
                         break;
                     default:
                         return;
                 }
             }
 
-            Matcher matcher;
-
             StringBuilder message = new StringBuilder();
-            boolean empty = true;
+            boolean hasAnyData = false;
 
-            for (String line : resultLines) {
-                if ((matcher = NO_DATA_PATTERN.matcher(line)).matches()) {
-                    switch (matcher.group(1)) {
-                        case "player interactions":
-                            message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(matcher.group(2)));
-                            break;
-                        case "block data":
-                            message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(matcher.group(2)));
-                            break;
-                        case "container transactions":
-                            message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(matcher.group(2)));
-                            break;
+            for (LookupResultLine line : resultLines) {
+                switch (line.getType()) {
+                    case NO_DATA: {
+                        NoDataResultLine noDataResultLine = (NoDataResultLine) line;
+                        NoDataResultLine.InteractionType interactionType = noDataResultLine.getInteractionType();
+                        switch (interactionType) {
+                            case PLAYER_INTERACTIONS:
+                                message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(noDataResultLine.getPage()));
+                                break;
+                            case BLOCK_DATA:
+                                message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(noDataResultLine.getPage()));
+                                break;
+                            case CONTAINER_TRANSACTIONS:
+                                message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(noDataResultLine.getPage()));
+                                break;
+                        }
+                        break;
                     }
-                } else if ((matcher = DATA_HEADER_PATTERN.matcher(line)).matches()) {
-                    message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(matcher.group(2), matcher.group(3), matcher.group(4)));
-                } else if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
-                    if (plugin.getSettings().hideOps && ignoredPlayers.contains(matcher.group(4)))
-                        continue;
+                    case HEADER: {
+                        HeaderResultLine headerResultLine = (HeaderResultLine) line;
+                        message.append("\n").append(Locale.INSPECT_DATA_HEADER.getMessage(
+                                headerResultLine.getX(), headerResultLine.getY(), headerResultLine.getZ()));
+                        break;
+                    }
+                    case DATA: {
+                        DataResultLine dataResultLine = (DataResultLine) line;
+                        if (plugin.getSettings().hideOps && ignoredPlayers.contains(dataResultLine.getPlayerName()))
+                            continue;
 
-                    double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
-                    if (plugin.getSettings().historyLimitDate >= days) {
-                        empty = false;
-                        String timeOfAction = matcher.group(1).trim();
-                        String playerAction = matcher.group(4).trim();
-                        String actionType = matcher.group(5).trim();
-                        String blockAction = matcher.group(6).trim();
-                        message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(timeOfAction,
-                                playerAction, actionType, blockAction));
+                        long days = TimeUnit.MILLISECONDS.toDays(
+                                System.currentTimeMillis() - dataResultLine.getDate().getTime());
+                        if (plugin.getSettings().historyLimitDate < days)
+                            continue;
+
+                        hasAnyData = true;
+                        message.append("\n").append(Locale.INSPECT_DATA_ROW.getMessage(
+                                dataResultLine.getTimeSinceAction(), dataResultLine.getPlayerName(),
+                                dataResultLine.getAction(), dataResultLine.getBlockAction()));
+
+                        break;
                     }
-                } else if ((matcher = DATA_FOOTER_PATTERN.matcher(line)).matches()) {
-                    int linePage = Integer.parseInt(matcher.group(2));
-                    message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(Math.max(linePage, 1),
-                            Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
+                    case FOOTER: {
+                        FooterResultLine footerResultLine = (FooterResultLine) line;
+                        message.append("\n").append(Locale.INSPECT_DATA_FOOTER.getMessage(
+                                Math.max(footerResultLine.getPage(), 1),
+                                Math.min(maxPage - 1, plugin.getSettings().historyLimitPage)));
+                        break;
+                    }
                 }
             }
 
-            player.sendMessage(empty ? Locale.NO_BLOCK_DATA.getMessage("that page") : message.substring(1));
+            player.sendMessage(hasAnyData ? message.substring(1) : Locale.NO_BLOCK_DATA.getMessage("that page"));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
     private int getMaxPage(Statement statement, LookupType type, Player player, Block block, BlockState blockState) {
-        String[] resultLines;
+        List<LookupResultLine> resultLines;
 
         int maxPage = 1;
 
         while (true) {
             switch (type) {
                 case INTERACTION_LOOKUP:
-                    resultLines = CoreProtectHook.performInteractLookup(statement, player, block, maxPage);
+                    resultLines = this.coreProtectProvider.performInteractLookup(statement, player, block, maxPage);
                     break;
                 case BLOCK_LOOKUP:
-                    resultLines = CoreProtectHook.performBlockLookup(statement, player, blockState, maxPage);
+                    resultLines = this.coreProtectProvider.performBlockLookup(statement, player, blockState, maxPage);
                     break;
                 case CHEST_TRANSACTIONS:
-                    resultLines = CoreProtectHook.performChestLookup(statement, player, block, maxPage);
+                    resultLines = this.coreProtectProvider.performChestLookup(statement, player, block, maxPage);
                     break;
                 default:
                     return 0;
             }
 
-            int amountOfRows = 0;
-            Matcher matcher;
+            boolean hasAnyData = false;
 
-            for (String line : resultLines) {
-                if ((matcher = DATA_LINE_PATTERN.matcher(line)).matches()) {
-                    double days = Double.parseDouble(matcher.group(1).split("/")[0].replace(",", ".")) / 24;
+            for (LookupResultLine line : resultLines) {
+                if (line.getType() == LookupResultLine.Type.DATA) {
+                    DataResultLine dataResultLine = (DataResultLine) line;
+                    long days = TimeUnit.MILLISECONDS.toDays(
+                            System.currentTimeMillis() - dataResultLine.getDate().getTime());
                     if (plugin.getSettings().historyLimitDate >= days) {
-                        amountOfRows++;
+                        hasAnyData = true;
+                        break;
                     }
                 }
             }
 
-            if (amountOfRows == 0) {
+            if (!hasAnyData) {
                 return maxPage;
             }
 
@@ -198,18 +210,23 @@ public final class CoreProtect {
         }
     }
 
-    private static boolean is116OrAbove() {
-        String version = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-        version = version.substring(1).replace("_", "").replace("R", "");
-        return Integer.parseInt(version) >= 1160;
-    }
+    private static CoreProtectProvider loadCoreProtectProvider() {
+        Plugin coreProtectPlugin = Bukkit.getPluginManager().getPlugin("CoreProtect");
+        String version = coreProtectPlugin.getDescription().getVersion().split("\\.")[0];
 
-    private static boolean isNewFooter() {
+        Class<?> coreProtectProviderClass;
+
         try {
-            Functions.getPageNavigation("", 0, 1);
-            return true;
-        } catch (Throwable ex) {
-            return false;
+            coreProtectProviderClass = Class.forName("com.bgsoftware.wildinspect.coreprotect.CoreProtect" + version);
+        } catch (ClassNotFoundException error) {
+            WildInspectPlugin.log("CoreProtect version is not supported: " + version);
+            throw new RuntimeException(error);
+        }
+
+        try {
+            return (CoreProtectProvider) coreProtectProviderClass.newInstance();
+        } catch (Exception error) {
+            throw new RuntimeException(error);
         }
     }
 

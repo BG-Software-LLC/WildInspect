@@ -1,11 +1,11 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'io.github.goooler.shadow' version '8.1.7'
     id 'maven-publish'
 }
 
 group 'WildInspect'
-version = "2024.1"
+version = "2024.2"
 
 project.ext {
     archiveFolder = file("archive/")
@@ -16,7 +16,7 @@ project.ext {
 
 allprojects {
     apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'io.github.goooler.shadow'
 
     repositories {
         maven { url 'https://repo.bg-software.com/repository/nms/' }
@@ -26,7 +26,7 @@ allprojects {
     }
 
     dependencies {
-        compileOnly "com.bgsoftware.common.reflection:ReflectionUtils:latest"
+        compileOnly "com.bgsoftware.common.reflection:ReflectionUtils:b5"
     }
 
     task checkDebug() {
@@ -51,16 +51,21 @@ subprojects {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation fileTree(rootProject.archiveFolder.getAbsolutePath())
 
-    implementation 'com.bgsoftware.common.reflection:ReflectionUtils:latest'
-    implementation 'com.bgsoftware.common.config:CommentedConfiguration:1.0.3'
+    implementation 'com.bgsoftware.common.reflection:ReflectionUtils:b5'
+    implementation 'com.bgsoftware.common.updater:Updater:b1'
+    implementation 'com.bgsoftware.common.config:CommentedConfiguration:b1'
+
+    implementation 'org.bstats:bstats-bukkit:3.0.0'
 
     // Spigot jar
     compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
-    // CoreProtect
-    compileOnly 'net.coreprotect:CoreProtect:19.0'
 }
 
 jar {
@@ -85,6 +90,9 @@ processResources {
 shadowJar {
     dependsOn(jar)
 
+    relocate 'org.bstats', 'com.bgsoftware.wildinspect.libs.org.bstats'
+    relocate 'com.bgsoftware.common', 'com.bgsoftware.wildinspect.libs.com.bgsoftware.common'
+
     archiveFileName = rootProject.name + "-" + rootProject.buildVersion + ".jar"
 
     delete fileTree(rootProject.targetFolder.getAbsolutePath())
@@ -94,24 +102,20 @@ shadowJar {
     configurations = [project.configurations.getByName("runtimeClasspath")]
 }
 
-task copyAPI(type: Copy) {
-    from rootProject.archiveFolder.getAbsolutePath() + '/API.jar'
-    into rootProject.targetFolder.getAbsolutePath()
-    rename('API.jar', rootProject.name + 'API.jar')
-}
-
 clean {
     delete rootProject.archiveFolder
 }
 
 build {
     dependsOn shadowJar
-    dependsOn copyAPI
     dependsOn clean
 }
 
 publish.shouldRunAfter shadowJar
 shadowJar.shouldRunAfter build
 build.shouldRunAfter subprojects.build
+
+shadowJar.dependsOn subprojects.build
+compileJava.dependsOn childProjects.values().shadowJar
 
 compileJava.options.encoding = 'UTF-8'
