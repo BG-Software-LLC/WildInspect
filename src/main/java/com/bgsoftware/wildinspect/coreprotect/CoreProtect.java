@@ -8,6 +8,7 @@ import com.bgsoftware.wildinspect.coreprotect.lookup.HeaderResultLine;
 import com.bgsoftware.wildinspect.coreprotect.lookup.LookupResultLine;
 import com.bgsoftware.wildinspect.coreprotect.lookup.NoDataResultLine;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
+import com.bgsoftware.wildinspect.scheduler.Scheduler;
 import com.bgsoftware.wildinspect.utils.InspectPlayers;
 import com.bgsoftware.wildinspect.utils.StringUtils;
 import org.bukkit.Bukkit;
@@ -69,7 +70,7 @@ public final class CoreProtect {
         List<String> operators = new ArrayList<>();
         Bukkit.getServer().getOperators().forEach(operator -> operators.add(operator.getName()));
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () ->
+        Scheduler.runTaskAsync(() ->
                 performDatabaseLookup(type, player, block, blockState, page, operators));
     }
 
@@ -77,7 +78,7 @@ public final class CoreProtect {
                                        List<String> ignoredPlayers) {
         try (Connection connection = this.coreProtectProvider.getConnection()) {
             if (connection == null) {
-                Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () ->
+                Scheduler.runTaskAsync(() ->
                         performDatabaseLookup(type, player, block, blockState, page, ignoredPlayers), 5L);
                 return;
             }

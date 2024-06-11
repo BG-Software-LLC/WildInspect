@@ -8,6 +8,7 @@ import com.bgsoftware.wildinspect.handlers.HooksHandler;
 import com.bgsoftware.wildinspect.handlers.SettingsHandler;
 import com.bgsoftware.wildinspect.listeners.BlockListener;
 import com.bgsoftware.wildinspect.listeners.PlayerListener;
+import com.bgsoftware.wildinspect.scheduler.Scheduler;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,42 +25,49 @@ public final class WildInspectPlugin extends JavaPlugin {
     private CoreProtect coreProtect;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         plugin = this;
+
+        Scheduler.initialize();
+    }
+
+    @Override
+    public void onEnable() {
         new Metrics(this, 4104);
 
-        Bukkit.getScheduler().runTask(this, () -> {
-            log("******** ENABLE START ********");
+        log("******** ENABLE START ********");
 
-            try {
-                coreProtect = new CoreProtect(this);
-            } catch (Exception error) {
-                error.printStackTrace();
-                Bukkit.getPluginManager().disablePlugin(this);
-                return;
-            }
+        getServer().getPluginManager().registerEvents(new InspectCommand(this), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
 
-            getServer().getPluginManager().registerEvents(new InspectCommand(this), this);
-            getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-            getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getCommand("wildinspect").setExecutor(new ReloadCommand());
+        getCommand("wildinspect").setTabCompleter(new ReloadCommand());
 
-            getCommand("wildinspect").setExecutor(new ReloadCommand());
-            getCommand("wildinspect").setTabCompleter(new ReloadCommand());
+        settingsHandler = new SettingsHandler(this);
+        hooksHandler = new HooksHandler(this);
 
-            settingsHandler = new SettingsHandler(this);
-            hooksHandler = new HooksHandler(this);
+        Locale.reload();
 
-            Locale.reload();
+        if (updater.isOutdated()) {
+            log("");
+            log("A new version is available (v" + updater.getLatestVersion() + ")!");
+            log("Version's description: \"" + updater.getVersionDescription() + "\"");
+            log("");
+        }
 
-            if (updater.isOutdated()) {
-                log("");
-                log("A new version is available (v" + updater.getLatestVersion() + ")!");
-                log("Version's description: \"" + updater.getVersionDescription() + "\"");
-                log("");
-            }
+        log("******** ENABLE DONE ********");
 
-            log("******** ENABLE DONE ********");
-        });
+        Scheduler.runTask(this::loadCoreProtect);
+    }
+
+    private void loadCoreProtect() {
+        try {
+            coreProtect = new CoreProtect(this);
+        } catch (Exception error) {
+            error.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
     }
 
     public SettingsHandler getSettings() {

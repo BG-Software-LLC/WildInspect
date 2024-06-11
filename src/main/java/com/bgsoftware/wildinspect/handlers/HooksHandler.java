@@ -2,6 +2,7 @@ package com.bgsoftware.wildinspect.handlers;
 
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.bgsoftware.wildinspect.hooks.ClaimsProvider;
+import com.bgsoftware.wildinspect.scheduler.Scheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ public final class HooksHandler {
 
     public HooksHandler(WildInspectPlugin plugin) {
         this.plugin = plugin;
-        Bukkit.getScheduler().runTask(plugin, this::loadHookups);
+        Scheduler.runTask(this::loadHookups);
     }
 
     public boolean hasRole(ClaimsProvider.ClaimPlugin claimPlugin, Player player, Location location, String... roles) {
