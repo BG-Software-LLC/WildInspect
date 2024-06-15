@@ -87,7 +87,9 @@ public final class HooksHandler {
             claimsProvider.ifPresent(this::registerClaimsProvider);
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Lands")) {
-            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Lands");
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Lands4");
+            if (!claimsProvider.isPresent())
+                claimsProvider = createInstance("ClaimsProvider_Lands7");
             claimsProvider.ifPresent(this::registerClaimsProvider);
         }
         if (Bukkit.getPluginManager().isPluginEnabled("Lazarus")) {
