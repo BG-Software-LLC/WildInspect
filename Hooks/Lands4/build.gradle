@@ -1,4 +1,4 @@
-group 'Hooks:Lands'
+group 'Hooks:Lands4'
 
 dependencies {
     compileOnly 'me.angeschossen:Lands:4.5.2.7'

@@ -39,7 +39,7 @@ public class CoreProtect22 implements CoreProtectProvider {
             "<COMPONENT>POPUP\\|" +
                     ChatColor.GRAY + "(.*?)\\|" +
                     ChatColor.GRAY + "(.*?)</COMPONENT> " +
-                    "(" + ChatColor.RED + "-|" + ChatColor.GREEN + "+) " +
+                    "(" + ChatColor.RED + "-|" + ChatColor.GREEN + "\\+) " +
                     COREPROTECT_COLOR + "(.*?)" +
                     ChatColor.WHITE + " (.*?) " +
                     COREPROTECT_COLOR + "(.*?)" +

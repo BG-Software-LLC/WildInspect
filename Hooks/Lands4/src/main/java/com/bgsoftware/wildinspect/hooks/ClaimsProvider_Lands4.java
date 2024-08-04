@@ -7,15 +7,24 @@ import me.angeschossen.lands.api.role.enums.RoleSetting;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public final class ClaimsProvider_Lands implements ClaimsProvider {
+public final class ClaimsProvider_Lands4 implements ClaimsProvider {
 
     private final LandsIntegration landsIntegration;
 
-    public ClaimsProvider_Lands(){
+    public ClaimsProvider_Lands4() {
         landsIntegration = new LandsIntegration(WildInspectPlugin.getPlugin(), false);
         landsIntegration.initialize();
 
         WildInspectPlugin.log(" - Using Lands as ClaimsProvider.");
+    }
+
+    public static boolean isCompatible() {
+        try {
+            Class.forName("me.angeschossen.lands.api.role.enums.RoleSetting");
+            return true;
+        } catch (ClassNotFoundException error) {
+            return false;
+        }
     }
 
     @Override

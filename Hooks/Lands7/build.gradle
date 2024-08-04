@@ -1,0 +1,12 @@
+group 'Hooks:Lands7'
+
+dependencies {
+    compileOnly 'me.angeschossen:Lands:7.4.1'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_lands') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_lands").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

@@ -6,6 +6,7 @@ description: Inspect block changes, chest transactions and more!
 website: https://bg-software.com/
 api-version: 1.13
 author: Ome_R
+folia-supported: true
 
 depend:
   - CoreProtect
