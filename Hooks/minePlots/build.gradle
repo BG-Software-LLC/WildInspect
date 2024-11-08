@@ -1,0 +1,18 @@
+group 'Hooks:minePlots'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+dependencies {
+    compileOnly "pl.minecodes:minePlots:4.5.0"
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_mineplots') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_mineplots").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}

@@ -128,6 +128,10 @@ public final class HooksHandler {
             Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_Villages");
             claimsProvider.ifPresent(this::registerClaimsProvider);
         }
+        if (Bukkit.getPluginManager().isPluginEnabled("minePlots")) {
+            Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_minePlots");
+            claimsProvider.ifPresent(this::registerClaimsProvider);
+        }
 
         WildInspectPlugin.log("Loading providers done (Took " + (System.currentTimeMillis() - startTime) + "ms)");
     }

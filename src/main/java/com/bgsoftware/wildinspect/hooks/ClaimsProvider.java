@@ -23,6 +23,7 @@ public interface ClaimsProvider {
         LANDS,
         LAZARUS,
         MASSIVE_FACTIONS,
+        MINE_PLOTS,
         PLOT_SQUARED,
         SUPERIOR_SKYBLOCK,
         TOWNY,
