@@ -215,20 +215,22 @@ public final class CoreProtect {
         Plugin coreProtectPlugin = Bukkit.getPluginManager().getPlugin("CoreProtect");
         String version = coreProtectPlugin.getDescription().getVersion().split("\\.")[0];
 
-        Class<?> coreProtectProviderClass;
-
         try {
-            coreProtectProviderClass = Class.forName("com.bgsoftware.wildinspect.coreprotect.CoreProtect" + version);
-        } catch (ClassNotFoundException error) {
-            WildInspectPlugin.log("CoreProtect version is not supported: " + version);
-            throw new RuntimeException(error);
+            CoreProtectVersion coreProtectVersion = CoreProtectVersion.valueOf("CORE_PROTECT_" + version);
+
+            for (String supportedVersion : coreProtectVersion.getSupportedVersions()) {
+                try {
+                    Class<?> coreProtectProviderClass = Class.forName(
+                            "com.bgsoftware.wildinspect.coreprotect.CoreProtect" + supportedVersion);
+                    return (CoreProtectProvider) coreProtectProviderClass.newInstance();
+                } catch (Throwable ignored) {
+                }
+            }
+
+        } catch (Throwable ignored) {
         }
 
-        try {
-            return (CoreProtectProvider) coreProtectProviderClass.newInstance();
-        } catch (Exception error) {
-            throw new RuntimeException(error);
-        }
+        throw new RuntimeException("CoreProtect version is not supported: " + version);
     }
 
 }
