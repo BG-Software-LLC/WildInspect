@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -212,8 +211,11 @@ public final class CoreProtect {
     }
 
     private static CoreProtectProvider loadCoreProtectProvider() {
-        Plugin coreProtectPlugin = Bukkit.getPluginManager().getPlugin("CoreProtect");
-        String version = coreProtectPlugin.getDescription().getVersion().split("\\.")[0];
+        String[] fullVersion = Bukkit.getPluginManager().getPlugin("CoreProtect")
+                .getDescription().getVersion().split("\\.");
+        String version = fullVersion[0];
+        if (version.equals("2"))
+            version = fullVersion[1];
 
         try {
             CoreProtectVersion coreProtectVersion = CoreProtectVersion.valueOf("CORE_PROTECT_" + version);

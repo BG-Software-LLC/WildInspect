@@ -1,0 +1,7 @@
+group 'Hooks:CoreProtect12'
+
+dependencies {
+    compileOnly 'net.coreprotect:CoreProtect:2.12.0'
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}

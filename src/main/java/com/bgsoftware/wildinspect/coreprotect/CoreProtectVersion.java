@@ -7,6 +7,8 @@ import java.util.List;
 
 public enum CoreProtectVersion {
 
+    CORE_PROTECT_12,
+    CORE_PROTECT_14("12"),
     CORE_PROTECT_19,
     CORE_PROTECT_20,
     CORE_PROTECT_21,
