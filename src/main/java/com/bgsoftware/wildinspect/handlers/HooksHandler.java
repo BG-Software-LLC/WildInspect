@@ -63,7 +63,10 @@ public final class HooksHandler {
         if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
             Plugin factions = Bukkit.getPluginManager().getPlugin("Factions");
             if (factions.getDescription().getAuthors().contains("drtshock")) {
-                if (factions.getDescription().getVersion().startsWith("1.6.9.5-U0.5")) {
+                if(factions.getDescription().getAuthors().contains("Driftay")) {
+                    Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_SaberFactions");
+                    claimsProvider.ifPresent(this::registerClaimsProvider);
+                } else if (factions.getDescription().getVersion().startsWith("1.6.9.5-U0.5")) {
                     Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsUUID05");
                     claimsProvider.ifPresent(this::registerClaimsProvider);
                 } else {

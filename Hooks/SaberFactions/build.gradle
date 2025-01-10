@@ -1,0 +1,12 @@
+group 'Hooks:SaberFactions'
+
+dependencies {
+    compileOnly "org.saberdev:Factions:1.6.9.5-4.1.6"
+    compileOnly "org.spigotmc:v1_8_R3-Taco:latest"
+    compileOnly rootProject
+}
+
+if (project.hasProperty('hook.compile_saberfactions') &&
+        !Boolean.valueOf(project.findProperty("hook.compile_saberfactions").toString())) {
+    project.tasks.all { task -> task.enabled = false }
+}
