@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public final class HooksHandler {
         Scheduler.runTask(this::loadHookups);
     }
 
-    public boolean hasRole(ClaimsProvider.ClaimPlugin claimPlugin, Player player, Location location, String... roles) {
+    public boolean hasRole(ClaimsProvider.ClaimPlugin claimPlugin, Player player, Location location, Collection<String> roles) {
         ClaimsProvider claimsProvider = claimsProviders.get(claimPlugin);
         return claimsProvider == null || claimsProvider.hasRole(player, location, roles);
     }

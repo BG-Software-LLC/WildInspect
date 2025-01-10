@@ -7,7 +7,8 @@ import com.massivecraft.massivecore.ps.PS;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
 
 public final class ClaimsProvider_MassiveFactions implements ClaimsProvider {
 
@@ -21,9 +22,9 @@ public final class ClaimsProvider_MassiveFactions implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player pl, Location location, String... roles) {
+    public boolean hasRole(Player pl, Location location, Collection<String> roles) {
         MPlayer mPlayer = MPlayer.get(pl);
-        return Arrays.asList(roles).contains(mPlayer.getRole().name());
+        return roles.contains(mPlayer.getRole().name().toLowerCase(Locale.ENGLISH));
     }
 
     @Override

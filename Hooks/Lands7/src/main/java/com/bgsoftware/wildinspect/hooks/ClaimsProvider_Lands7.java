@@ -7,6 +7,8 @@ import me.angeschossen.lands.api.land.Area;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_Lands7 implements ClaimsProvider {
 
     private final LandsIntegration landsIntegration;
@@ -22,7 +24,7 @@ public final class ClaimsProvider_Lands7 implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 

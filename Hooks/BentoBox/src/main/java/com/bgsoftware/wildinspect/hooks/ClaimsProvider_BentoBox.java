@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.database.objects.Island;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public final class ClaimsProvider_BentoBox implements ClaimsProvider {
@@ -20,7 +21,7 @@ public final class ClaimsProvider_BentoBox implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 

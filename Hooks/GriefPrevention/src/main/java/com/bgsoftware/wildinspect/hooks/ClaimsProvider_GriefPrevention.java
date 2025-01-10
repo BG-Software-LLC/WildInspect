@@ -7,6 +7,8 @@ import me.ryanhamshire.GriefPrevention.PlayerData;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_GriefPrevention implements ClaimsProvider {
 
     public ClaimsProvider_GriefPrevention() {
@@ -19,7 +21,7 @@ public final class ClaimsProvider_GriefPrevention implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 

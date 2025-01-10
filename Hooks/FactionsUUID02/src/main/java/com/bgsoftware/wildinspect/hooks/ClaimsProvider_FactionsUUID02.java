@@ -8,7 +8,8 @@ import com.massivecraft.factions.FPlayers;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
 
 public final class ClaimsProvider_FactionsUUID02 implements ClaimsProvider {
 
@@ -22,9 +23,9 @@ public final class ClaimsProvider_FactionsUUID02 implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... roles) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
-        return Arrays.asList(roles).contains(fPlayer.getRole().name());
+        return roles.contains(fPlayer.getRole().name().toLowerCase(Locale.ENGLISH));
     }
 
     @Override
