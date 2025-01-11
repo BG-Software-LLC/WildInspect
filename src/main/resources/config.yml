@@ -12,11 +12,14 @@ commands:
 
 # A list of roles that can use the command.
 # FactionsUUID: RECRUIT, NORMAL, MODERATOR, COLEADER, ADMIN
+# SaberFactions: RECRUIT, NORMAL, MODERATOR, COLEADER, LEADER
 # MassiveFactions: RECRUIT, MEMBER, OFFICER, LEADER
 # Towny: configured.
 required-roles:
 - MODERATOR
+- COLEADER
 - ADMIN
+- LEADER
 
 # History limits of the inspect mode.
 # If you want to disable the feature, set the limit to -1.
