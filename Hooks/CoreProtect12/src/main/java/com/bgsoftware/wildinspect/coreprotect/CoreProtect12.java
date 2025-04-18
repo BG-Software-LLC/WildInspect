@@ -72,7 +72,7 @@ public class CoreProtect12 implements CoreProtectProvider {
         for (String line : results.split("\n")) {
             if ((matcher = NO_DATA_PATTERN.matcher(line)).find()) {
                 NoDataResultLine.InteractionType interactionType = NoDataResultLine.InteractionType
-                        .of(matcher.group(1).replace(" ", "_"));
+                        .valueOf(matcher.group(1).replace(" ", "_"));
                 parsedResults.add(new NoDataResultLine(interactionType, matcher.group(2)));
             } else if ((matcher = HEADER_PATTERN.matcher(line)).find()) {
                 int x = Integer.parseInt(matcher.group(1));

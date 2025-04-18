@@ -1,7 +1,7 @@
 group 'Hooks:CoreProtect22'
 
 dependencies {
-    compileOnly 'net.coreprotect:CoreProtect:22.3'
+    compileOnly 'net.coreprotect:CoreProtect:22.4'
     compileOnly "org.spigotmc:v1_16_R3:latest"
     compileOnly rootProject
 }
