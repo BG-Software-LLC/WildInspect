@@ -27,10 +27,14 @@ import java.util.concurrent.TimeUnit;
 public final class CoreProtect {
 
     private final WildInspectPlugin plugin;
-    private final CoreProtectProvider coreProtectProvider;
+    private CoreProtectProvider coreProtectProvider;
 
     public CoreProtect(WildInspectPlugin plugin) {
         this.plugin = plugin;
+        refreshProvider();
+    }
+
+    public void refreshProvider() {
         this.coreProtectProvider = loadCoreProtectProvider();
     }
 
@@ -118,13 +122,16 @@ public final class CoreProtect {
                         NoDataResultLine.InteractionType interactionType = noDataResultLine.getInteractionType();
                         switch (interactionType) {
                             case PLAYER_INTERACTIONS:
-                                message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage());
+                                hasAnyData = true;
                                 break;
                             case BLOCK_DATA:
-                                message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage());
+                                hasAnyData = true;
                                 break;
                             case CONTAINER_TRANSACTIONS:
-                                message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage());
+                                hasAnyData = true;
                                 break;
                         }
                         break;
@@ -162,7 +169,7 @@ public final class CoreProtect {
                 }
             }
 
-            player.sendMessage(hasAnyData ? message.substring(1) : Locale.NO_BLOCK_DATA.getMessage("that page"));
+            player.sendMessage(hasAnyData ? message.substring(1) : Locale.NO_BLOCK_DATA.getMessage());
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
