@@ -9,7 +9,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
 
 public final class ClaimsProvider_Lazarus implements ClaimsProvider {
 
@@ -23,10 +24,10 @@ public final class ClaimsProvider_Lazarus implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player pl, Location location, String... roles) {
+    public boolean hasRole(Player pl, Location location, Collection<String> roles) {
         PlayerFaction playerFaction = FactionsManager.getInstance().getPlayerFaction(pl);
-        String roleName = playerFaction == null ? "" : playerFaction.getMember(pl).getRole().getName().toUpperCase();
-        return Arrays.asList(roles).contains(roleName);
+        String roleName = playerFaction == null ? "" : playerFaction.getMember(pl).getRole().getName().toLowerCase(Locale.ENGLISH);
+        return roles.contains(roleName);
     }
 
     @Override

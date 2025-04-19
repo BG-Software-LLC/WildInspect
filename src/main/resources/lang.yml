@@ -32,9 +32,9 @@ NOT_INSIDE_CLAIM: '&3WildInspect &f- Must be inside your claims to see block''s 
 
 # Called when couldn't find block data.
 LIMIT_REACH: '&3WildInspect &f- No block data found for that page.'
-NO_BLOCK_DATA: '&3WildInspect &f- No block data found for {0}.'
-NO_BLOCK_INTERACTIONS: '&3WildInspect &f- No block interactions found for {0}.'
-NO_CONTAINER_TRANSACTIONS: '&3WildInspect &f- No container transactions found for {0}.'
+NO_BLOCK_DATA: '&3WildInspect &f- No block data found at this location.'
+NO_BLOCK_INTERACTIONS: '&3WildInspect &f- No block interactions found at this location.'
+NO_CONTAINER_TRANSACTIONS: '&3WildInspect &f- No container transactions found at this location.'
 
 # Called when player tried to inspect block's page without selecting one.
 NO_BLOCK_SELECTED: '&3WildInspect &f- Select a block using "{0}" first.'

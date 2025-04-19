@@ -1,7 +1,7 @@
 package com.bgsoftware.wildinspect.hooks;
 
 import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
-import com.bgsoftware.superiorskyblock.api.handlers.PlayersManager;
+import com.bgsoftware.superiorskyblock.api.handlers.RolesManager;
 import com.bgsoftware.superiorskyblock.api.island.Island;
 import com.bgsoftware.superiorskyblock.api.island.IslandPrivilege;
 import com.bgsoftware.superiorskyblock.api.island.PlayerRole;
@@ -10,11 +10,14 @@ import com.bgsoftware.wildinspect.WildInspectPlugin;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Locale;
 
 public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider {
 
     private static final IslandPrivilege BUILD_PRIVILEGE = IslandPrivilege.getByName("BUILD");
+
+    private static final RolesManager ROLES_MANAGER = SuperiorSkyblockAPI.getSuperiorSkyblock().getRoles();
 
     public ClaimsProvider_SuperiorSkyblock() {
         WildInspectPlugin.log(" - Using SuperiorSkyblock as ClaimsProvider.");
@@ -26,13 +29,12 @@ public final class ClaimsProvider_SuperiorSkyblock implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         SuperiorPlayer superiorPlayer = SuperiorSkyblockAPI.getPlayer(player);
         Island island = SuperiorSkyblockAPI.getIslandAt(location);
-        PlayersManager playersManager = SuperiorSkyblockAPI.getSuperiorSkyblock().getPlayers();
         PlayerRole playerRole = island == null || island.isMember(superiorPlayer) ? superiorPlayer.getPlayerRole() :
-                island.isCoop(superiorPlayer) ? playersManager.getCoopRole() : playersManager.getGuestRole();
-        return Arrays.stream(role).anyMatch(_role -> playerRole.toString().equalsIgnoreCase(_role));
+                island.isCoop(superiorPlayer) ? ROLES_MANAGER.getCoopRole() : ROLES_MANAGER.getGuestRole();
+        return roles.contains(playerRole.getName().toLowerCase(Locale.ENGLISH));
     }
 
     @Override

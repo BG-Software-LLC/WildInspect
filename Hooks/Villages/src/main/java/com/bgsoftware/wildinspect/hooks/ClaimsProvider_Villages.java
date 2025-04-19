@@ -6,6 +6,8 @@ import com.stefthedev.villages.villages.Village;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_Villages implements ClaimsProvider {
 
     public ClaimsProvider_Villages() {
@@ -18,7 +20,7 @@ public final class ClaimsProvider_Villages implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 

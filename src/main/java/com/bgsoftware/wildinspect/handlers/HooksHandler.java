@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +26,7 @@ public final class HooksHandler {
         Scheduler.runTask(this::loadHookups);
     }
 
-    public boolean hasRole(ClaimsProvider.ClaimPlugin claimPlugin, Player player, Location location, String... roles) {
+    public boolean hasRole(ClaimsProvider.ClaimPlugin claimPlugin, Player player, Location location, Collection<String> roles) {
         ClaimsProvider claimsProvider = claimsProviders.get(claimPlugin);
         return claimsProvider == null || claimsProvider.hasRole(player, location, roles);
     }
@@ -62,7 +63,10 @@ public final class HooksHandler {
         if (Bukkit.getPluginManager().isPluginEnabled("Factions")) {
             Plugin factions = Bukkit.getPluginManager().getPlugin("Factions");
             if (factions.getDescription().getAuthors().contains("drtshock")) {
-                if (factions.getDescription().getVersion().startsWith("1.6.9.5-U0.5")) {
+                if(factions.getDescription().getAuthors().contains("Driftay")) {
+                    Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_SaberFactions");
+                    claimsProvider.ifPresent(this::registerClaimsProvider);
+                } else if (factions.getDescription().getVersion().startsWith("1.6.9.5-U0.5")) {
                     Optional<ClaimsProvider> claimsProvider = createInstance("ClaimsProvider_FactionsUUID05");
                     claimsProvider.ifPresent(this::registerClaimsProvider);
                 } else {

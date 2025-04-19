@@ -11,10 +11,10 @@ import org.bukkit.entity.Player;
 import java.util.Collection;
 import java.util.Locale;
 
-public final class ClaimsProvider_FactionsUUID02 implements ClaimsProvider {
+public final class ClaimsProvider_SaberFactions implements ClaimsProvider {
 
-    public ClaimsProvider_FactionsUUID02() {
-        WildInspectPlugin.log(" - Using FactionsUUID as ClaimsProvider.");
+    public ClaimsProvider_SaberFactions() {
+        WildInspectPlugin.log(" - Using SaberFactions as ClaimsProvider.");
     }
 
     @Override
@@ -32,7 +32,7 @@ public final class ClaimsProvider_FactionsUUID02 implements ClaimsProvider {
     public boolean hasRegionAccess(Player player, Location location) {
         FPlayer fPlayer = FPlayers.getInstance().getByPlayer(player);
         return fPlayer.isAdminBypassing() || (fPlayer.hasFaction() &&
-                fPlayer.getFaction().equals(Board.getInstance().getFactionAt(new FLocation(location))));
+                fPlayer.getFaction().equals(Board.getInstance().getFactionAt(FLocation.wrap(location))));
     }
 
 }

@@ -8,6 +8,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import pl.minecodes.plots.api.plot.PlotApi;
 import pl.minecodes.plots.api.plot.PlotServiceApi;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_minePlots implements ClaimsProvider {
 
     private final PlotServiceApi plotService;
@@ -31,15 +33,15 @@ public final class ClaimsProvider_minePlots implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player pl, Location location, String... roles) {
+    public boolean hasRole(Player pl, Location location, Collection<String> roles) {
         PlotApi plot = this.plotService.getPlot(location);
         if (plot == null)
             return false;
 
         for (String role : roles) {
-            if (role.equalsIgnoreCase("member"))
+            if (role.equals("member"))
                 return plot.getMember(pl.getUniqueId()) != null;
-            else if (role.equalsIgnoreCase("owner"))
+            else if (role.equals("owner"))
                 return plot.getOwner().equals(pl.getUniqueId());
         }
 

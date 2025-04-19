@@ -6,6 +6,8 @@ import com.wasteofplastic.askyblock.Island;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_ASkyBlock implements ClaimsProvider {
 
     public ClaimsProvider_ASkyBlock() {
@@ -18,7 +20,7 @@ public final class ClaimsProvider_ASkyBlock implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 

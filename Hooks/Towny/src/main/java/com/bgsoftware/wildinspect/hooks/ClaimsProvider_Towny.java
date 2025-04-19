@@ -8,7 +8,7 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
 
 public final class ClaimsProvider_Towny implements ClaimsProvider {
 
@@ -22,10 +22,15 @@ public final class ClaimsProvider_Towny implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... roles) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         try {
             Resident resident = TownyAPI.getInstance().getResident(player.getUniqueId());
-            return Arrays.stream(roles).anyMatch(resident::hasTownRank) || (Arrays.asList(roles).contains("MAYOR") && resident.isMayor());
+            for (String role : roles) {
+                if (role.equals("mayor") && resident.isMayor())
+                    return true;
+                if (resident.hasTownRank(role))
+                    return true;
+            }
         } catch (Exception ignored) {
         }
 

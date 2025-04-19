@@ -3,9 +3,10 @@ package com.bgsoftware.wildinspect.hooks;
 import com.bgsoftware.wildinspect.WildInspectPlugin;
 import com.wasteofplastic.acidisland.ASkyBlockAPI;
 import com.wasteofplastic.acidisland.Island;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 public final class ClaimsProvider_AcidIsland implements ClaimsProvider {
 
@@ -19,7 +20,7 @@ public final class ClaimsProvider_AcidIsland implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 
@@ -29,7 +30,7 @@ public final class ClaimsProvider_AcidIsland implements ClaimsProvider {
             Island is = ASkyBlockAPI.getInstance().getIslandAt(location);
             return player.hasPermission("acidisland.mod.bypassprotect") ||
                     is.getOwner().equals(player.getUniqueId()) || is.getMembers().contains(player.getUniqueId());
-        } catch(NullPointerException e){
+        } catch (NullPointerException e) {
             return false;
         }
     }

@@ -5,7 +5,7 @@ import com.plotsquared.core.location.Location;
 import com.plotsquared.core.plot.Plot;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
+import java.util.Collection;
 
 public final class ClaimsProvider_PlotSquared6 implements ClaimsProvider {
 
@@ -15,11 +15,11 @@ public final class ClaimsProvider_PlotSquared6 implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, org.bukkit.Location bukkitLocation, String... role) {
+    public boolean hasRole(Player player, org.bukkit.Location bukkitLocation, Collection<String> roles) {
         Location location = BukkitUtil.adaptComplete(bukkitLocation);
         Plot plot = location.getOwnedPlot();
         assert plot != null; // Already checked in hasRegionAccess
-        return Arrays.asList(role).contains(plot.isOwner(player.getUniqueId()) ? "OWNER" : "TRUSTED");
+        return roles.contains(plot.isOwner(player.getUniqueId()) ? "owner" : "trusted");
     }
 
     @Override

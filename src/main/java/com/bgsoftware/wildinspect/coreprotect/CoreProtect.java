@@ -15,7 +15,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,10 +27,14 @@ import java.util.concurrent.TimeUnit;
 public final class CoreProtect {
 
     private final WildInspectPlugin plugin;
-    private final CoreProtectProvider coreProtectProvider;
+    private CoreProtectProvider coreProtectProvider;
 
     public CoreProtect(WildInspectPlugin plugin) {
         this.plugin = plugin;
+        refreshProvider();
+    }
+
+    public void refreshProvider() {
         this.coreProtectProvider = loadCoreProtectProvider();
     }
 
@@ -119,13 +122,16 @@ public final class CoreProtect {
                         NoDataResultLine.InteractionType interactionType = noDataResultLine.getInteractionType();
                         switch (interactionType) {
                             case PLAYER_INTERACTIONS:
-                                message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_BLOCK_INTERACTIONS.getMessage());
+                                hasAnyData = true;
                                 break;
                             case BLOCK_DATA:
-                                message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_BLOCK_DATA.getMessage());
+                                hasAnyData = true;
                                 break;
                             case CONTAINER_TRANSACTIONS:
-                                message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage(noDataResultLine.getPage()));
+                                message.append("\n").append(Locale.NO_CONTAINER_TRANSACTIONS.getMessage());
+                                hasAnyData = true;
                                 break;
                         }
                         break;
@@ -163,7 +169,7 @@ public final class CoreProtect {
                 }
             }
 
-            player.sendMessage(hasAnyData ? message.substring(1) : Locale.NO_BLOCK_DATA.getMessage("that page"));
+            player.sendMessage(hasAnyData ? message.substring(1) : Locale.NO_BLOCK_DATA.getMessage());
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -212,23 +218,28 @@ public final class CoreProtect {
     }
 
     private static CoreProtectProvider loadCoreProtectProvider() {
-        Plugin coreProtectPlugin = Bukkit.getPluginManager().getPlugin("CoreProtect");
-        String version = coreProtectPlugin.getDescription().getVersion().split("\\.")[0];
-
-        Class<?> coreProtectProviderClass;
-
-        try {
-            coreProtectProviderClass = Class.forName("com.bgsoftware.wildinspect.coreprotect.CoreProtect" + version);
-        } catch (ClassNotFoundException error) {
-            WildInspectPlugin.log("CoreProtect version is not supported: " + version);
-            throw new RuntimeException(error);
-        }
+        String[] fullVersion = Bukkit.getPluginManager().getPlugin("CoreProtect")
+                .getDescription().getVersion().split("\\.");
+        String version = fullVersion[0];
+        if (version.equals("2"))
+            version = fullVersion[1];
 
         try {
-            return (CoreProtectProvider) coreProtectProviderClass.newInstance();
-        } catch (Exception error) {
-            throw new RuntimeException(error);
+            CoreProtectVersion coreProtectVersion = CoreProtectVersion.valueOf("CORE_PROTECT_" + version);
+
+            for (String supportedVersion : coreProtectVersion.getSupportedVersions()) {
+                try {
+                    Class<?> coreProtectProviderClass = Class.forName(
+                            "com.bgsoftware.wildinspect.coreprotect.CoreProtect" + supportedVersion);
+                    return (CoreProtectProvider) coreProtectProviderClass.newInstance();
+                } catch (Throwable ignored) {
+                }
+            }
+
+        } catch (Throwable ignored) {
         }
+
+        throw new RuntimeException("CoreProtect version is not supported: " + version);
     }
 
 }

@@ -6,6 +6,8 @@ import com.griefdefender.api.claim.TrustTypes;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+
 public final class ClaimsProvider_GriefDefender implements ClaimsProvider {
 
     @Override
@@ -14,7 +16,7 @@ public final class ClaimsProvider_GriefDefender implements ClaimsProvider {
     }
 
     @Override
-    public boolean hasRole(Player player, Location location, String... role) {
+    public boolean hasRole(Player player, Location location, Collection<String> roles) {
         return true;
     }
 
