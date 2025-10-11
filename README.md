@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://bg-software.com/imgs/wildinspect-logo.png" />
+<img src="https://static.bg-software.com/imgs/wildinspect-logo.png" />
 <h2 align="center">Give your players the ability to inspect blocks inside their claims!</h2>
 </p>
 <br>
