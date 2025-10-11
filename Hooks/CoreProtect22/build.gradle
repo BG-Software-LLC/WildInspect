@@ -1,5 +1,11 @@
 group 'Hooks:CoreProtect22'
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 dependencies {
     compileOnly 'net.coreprotect:CoreProtect:22.4'
     compileOnly "org.spigotmc:v1_16_R3:latest"
