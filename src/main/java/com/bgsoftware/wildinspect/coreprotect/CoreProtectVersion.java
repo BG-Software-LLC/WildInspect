@@ -13,7 +13,8 @@ public enum CoreProtectVersion {
     CORE_PROTECT_20,
     CORE_PROTECT_21,
     CORE_PROTECT_22,
-    CORE_PROTECT_23("22");
+    CORE_PROTECT_23("22"),
+    CORE_PROTECT_24("22");
 
     private final List<String> supportedVersions;
 
